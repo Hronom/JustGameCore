@@ -4,6 +4,7 @@ MainSystem::MainSystem( Ogre::String xOgreCfg, Ogre::String xPluginsCfg, Ogre::S
 {
 	mGraphicSystem = new GraphicSystem(this, xOgreCfg, xPluginsCfg, xResourcesCfg, xOgreLogFile, xMyGUILogFile);
 	mPhysicsSystem = new PhysicsSystem(this);
+	mSoundSystem = new SoundSystem(this);
 	mInputSystem = new InputSystem(this);
 	mStatesSystem = new StatesSystem(this);
 
@@ -18,6 +19,7 @@ MainSystem::~MainSystem()
 {
 	delete mStatesSystem;
 	delete mInputSystem;
+	delete mSoundSystem;
 	delete mPhysicsSystem;
 	delete mGraphicSystem;
 }
@@ -26,6 +28,7 @@ bool MainSystem::init()
 {
 	mGraphicSystem->init();
 	mPhysicsSystem->init(mGraphicSystem->getSceneManager());
+	mSoundSystem->init();
 	mInputSystem->init(mGraphicSystem->getWinHandle(), mGraphicSystem->getWinWidth(), mGraphicSystem->getWinHeight());
 	mStatesSystem->init();
 

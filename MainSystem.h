@@ -6,6 +6,7 @@
 #include "ISystemsListener.h"
 #include "GraphicSystem.h"
 #include "PhysicsSystem.h"
+#include "SoundSystem.h"
 #include "InputSystem.h"
 #include "StatesSystem.h"
 #include "IState.h"
@@ -15,6 +16,7 @@ class MainSystem : public ISystemsListener, public ICore
 private:
 	GraphicSystem *mGraphicSystem;
 	PhysicsSystem *mPhysicsSystem;
+	SoundSystem *mSoundSystem;
 	InputSystem *mInputSystem;
 	StatesSystem *mStatesSystem;
 

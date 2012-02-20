@@ -15,6 +15,8 @@
     <ClCompile Include="InputSystem.cpp" />
     <ClCompile Include="MainSystem.cpp" />
     <ClCompile Include="PhysicsSystem.cpp" />
+    <ClCompile Include="SoundNode.cpp" />
+    <ClCompile Include="SoundSystem.cpp" />
     <ClCompile Include="StatesSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -26,6 +28,8 @@
     <ClInclude Include="ISystemsListener.h" />
     <ClInclude Include="MainSystem.h" />
     <ClInclude Include="PhysicsSystem.h" />
+    <ClInclude Include="SoundNode.h" />
+    <ClInclude Include="SoundSystem.h" />
     <ClInclude Include="StatesSystem.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -58,16 +62,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(OGRE_HOME)\include;$(OGRE_HOME)\include\OIS;$(OGRE_HOME)\include\OGRE;$(OGRE_HOME)\Samples\Common\include;$(OGRE_HOME)\boost_1_47;$(MyGUI_HOME)\MyGUIEngine\include;$(MyGUI_HOME)\Platforms\Ogre\OgrePlatform\include;$(OgreBullet_HOME)\Collisions\include;$(OgreBullet_HOME)\Dynamics\include;$(Bullet_HOME)\src;$(IncludePath)</IncludePath>
-    <LibraryPath>$(OGRE_HOME)\lib\$(Configuration);$(OGRE_HOME)\boost_1_47\lib;$(MyGUI_builded_HOME)\lib\$(Configuration);$(OgreBullet_HOME)\lib\$(Configuration);$(Bullet_builded_HOME)\lib\$(Configuration);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(FREEALUT_HOME)\include\AL;$(OPENAL_HOME)\include;D:\Dev\JustGame\JustGameCore;$(OGRE_HOME)\include;$(OGRE_HOME)\include\OIS;$(OGRE_HOME)\include\OGRE;$(OGRE_HOME)\Samples\Common\include;$(OGRE_HOME)\boost_1_47;$(MyGUI_HOME)\MyGUIEngine\include;$(MyGUI_HOME)\Platforms\Ogre\OgrePlatform\include;$(OgreBullet_HOME)\Collisions\include;$(OgreBullet_HOME)\Dynamics\include;$(Bullet_HOME)\src;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)\lib\</OutDir>
     <IntDir>$(SolutionDir)\IntermediateFiles\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)_d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(OGRE_HOME)\include;$(OGRE_HOME)\include\OIS;$(OGRE_HOME)\include\OGRE;$(OGRE_HOME)\Samples\Common\include;$(OGRE_HOME)\boost_1_47;$(MyGUI_HOME)\MyGUIEngine\include;$(MyGUI_HOME)\Platforms\Ogre\OgrePlatform\include;$(OgreBullet_HOME)\Collisions\include;$(OgreBullet_HOME)\Dynamics\include;$(Bullet_HOME)\src;$(IncludePath)</IncludePath>
-    <LibraryPath>$(OGRE_HOME)\lib\$(Configuration);$(OGRE_HOME)\boost_1_47\lib;$(MyGUI_builded_HOME)\lib\$(Configuration);$(OgreBullet_HOME)\lib\$(Configuration);$(Bullet_builded_HOME)\lib\$(Configuration);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(FREEALUT_HOME)\include\AL;$(OPENAL_HOME)\include;D:\Dev\JustGame\JustGameCore;$(OGRE_HOME)\include;$(OGRE_HOME)\include\OIS;$(OGRE_HOME)\include\OGRE;$(OGRE_HOME)\Samples\Common\include;$(OGRE_HOME)\boost_1_47;$(MyGUI_HOME)\MyGUIEngine\include;$(MyGUI_HOME)\Platforms\Ogre\OgrePlatform\include;$(OgreBullet_HOME)\Collisions\include;$(OgreBullet_HOME)\Dynamics\include;$(Bullet_HOME)\src;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)\lib\</OutDir>
     <IntDir>$(SolutionDir)\IntermediateFiles\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
