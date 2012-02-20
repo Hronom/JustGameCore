@@ -7,10 +7,6 @@
 #include <OgreBulletDynamicsRigidBody.h>
 #include <string>
 
-#include "IState.h"
-
-class GameObject;
-
 class ICore
 {
 public:

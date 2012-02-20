@@ -7,9 +7,6 @@
     <Filter Include="Interfaces">
       <UniqueIdentifier>{f6d987a3-64d1-4ab6-b93b-29df755e4a02}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Objects">
-      <UniqueIdentifier>{c683c548-6ca3-42d0-9d5d-f1a23c6a9823}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicSystem.cpp">
@@ -23,9 +20,6 @@
     </ClCompile>
     <ClCompile Include="StatesSystem.cpp">
       <Filter>Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject.cpp">
-      <Filter>Objects</Filter>
     </ClCompile>
     <ClCompile Include="InputSystem.cpp">
       <Filter>Systems</Filter>
@@ -44,13 +38,7 @@
     <ClInclude Include="StatesSystem.h">
       <Filter>Systems</Filter>
     </ClInclude>
-    <ClInclude Include="GameObject.h">
-      <Filter>Objects</Filter>
-    </ClInclude>
     <ClInclude Include="ICore.h">
-      <Filter>Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="IGameObjectsListener.h">
       <Filter>Interfaces</Filter>
     </ClInclude>
     <ClInclude Include="ILoadScreen.h">
