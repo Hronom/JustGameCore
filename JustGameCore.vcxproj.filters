@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Systems">
+      <UniqueIdentifier>{07ab8703-0296-45e4-a7a6-393b65af8ff3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Interfaces">
+      <UniqueIdentifier>{f6d987a3-64d1-4ab6-b93b-29df755e4a02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects">
+      <UniqueIdentifier>{c683c548-6ca3-42d0-9d5d-f1a23c6a9823}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="GraphicSystem.cpp">
+      <Filter>Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="MainSystem.cpp">
+      <Filter>Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsSystem.cpp">
+      <Filter>Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="StatesSystem.cpp">
+      <Filter>Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="InputSystem.cpp">
+      <Filter>Systems</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GraphicSystem.h">
+      <Filter>Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="MainSystem.h">
+      <Filter>Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsSystem.h">
+      <Filter>Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="StatesSystem.h">
+      <Filter>Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="ICore.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IGameObjectsListener.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="ILoadScreen.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IState.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="ISystemsListener.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="InputSystem.h">
+      <Filter>Systems</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
