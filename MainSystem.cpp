@@ -1,18 +1,27 @@
 #include "MainSystem.h"
+using namespace JGC;
 
-MainSystem::MainSystem( Ogre::String xOgreCfg, Ogre::String xPluginsCfg, Ogre::String xResourcesCfg, Ogre::String xOgreLogFile, Ogre::String xMyGUILogFile)
+MainSystem* MainSystem::mInstance = 0;
+
+MainSystem::MainSystem(Ogre::String xOgreCfg, Ogre::String xPluginsCfg, Ogre::String xResourcesCfg, Ogre::String xOgreLogFile, Ogre::String xMyGUILogFile)
 {
-	mGraphicSystem = new GraphicSystem(this, xOgreCfg, xPluginsCfg, xResourcesCfg, xOgreLogFile, xMyGUILogFile);
-	mPhysicsSystem = new PhysicsSystem(this);
-	mSoundSystem = new SoundSystem(this);
-	mInputSystem = new InputSystem(this);
-	mStatesSystem = new StatesSystem(this);
+	mGraphicSystem = new Graphic::GraphicSystem(this, xOgreCfg, xPluginsCfg, xResourcesCfg, xOgreLogFile, xMyGUILogFile);
+	mPhysicsSystem = new Physics::PhysicsSystem(this);
+	mSoundSystem = new Sound::SoundSystem(this);
+	mInputSystem = new Input::InputSystem(this);
+	mStatesSystem = new States::StatesSystem(this);
 
 	mNeedShutdown = false;
 	mStateLoad = false;
 
 	mCurrentStateName = "";
 	mShowLoadScreen = false;
+
+	mGraphicSystem->init();
+	mPhysicsSystem->init(mGraphicSystem->getSceneManager());
+	mSoundSystem->init();
+	mInputSystem->init(mGraphicSystem->getWinHandle(), mGraphicSystem->getWinWidth(), mGraphicSystem->getWinHeight());
+	mStatesSystem->init();
 }
 
 MainSystem::~MainSystem()
@@ -24,15 +33,20 @@ MainSystem::~MainSystem()
 	delete mGraphicSystem;
 }
 
-bool MainSystem::init()
+void MainSystem::initialize(Ogre::String xOgreCfg, Ogre::String xPluginsCfg, Ogre::String xResourcesCfg, Ogre::String xOgreLogFile, Ogre::String xMyGUILogFile)
 {
-	mGraphicSystem->init();
-	mPhysicsSystem->init(mGraphicSystem->getSceneManager());
-	mSoundSystem->init();
-	mInputSystem->init(mGraphicSystem->getWinHandle(), mGraphicSystem->getWinWidth(), mGraphicSystem->getWinHeight());
-	mStatesSystem->init();
+	mInstance = new MainSystem(xOgreCfg, xPluginsCfg, xResourcesCfg, xOgreLogFile, xMyGUILogFile);
+}
 
-	return true;
+void MainSystem::shutdown()
+{
+	delete mInstance;
+	mInstance = 0;
+}
+
+MainSystem* MainSystem::instance()
+{
+	return mInstance;
 }
 
 void MainSystem::run()
@@ -48,6 +62,43 @@ void  MainSystem::setLoadState(ILoadScreen *xLoadState)
 void MainSystem::addNormalState(std::string xStateName, IState *xState)
 {
 	mStatesSystem->addNormalState(xStateName, xState);
+}
+
+void MainSystem::needSwitchToState(std::string xStateName, bool xShowLoadScreen)
+{
+	mCurrentStateName = xStateName;
+	mShowLoadScreen = xShowLoadScreen;
+}
+
+void MainSystem::stateLoadProgress(int xProgressValue, std::string xText)
+{
+	mStatesSystem->injectStateLoadProgress(xProgressValue, xText);
+	mGraphicSystem->needSingleUpdate();
+}
+
+void MainSystem::needShutdown()
+{
+	mNeedShutdown = true;
+}
+
+Ogre::SceneManager* MainSystem::getSceneManager()
+{
+	return mGraphicSystem->getSceneManager();
+}
+
+Ogre::Camera* MainSystem::getCamera()
+{
+	return mGraphicSystem->getCamera();
+}
+
+MyGUI::Gui* MainSystem::getGui()
+{
+	return mGraphicSystem->getGui();
+}
+
+OgreBulletDynamics::DynamicsWorld* MainSystem::getDynamicsWorld()
+{
+	return mPhysicsSystem->getDynamicsWorld();
 }
 
 //-------------------------------------------------------------
@@ -125,44 +176,4 @@ void MainSystem::stateStartLoad()
 void MainSystem::stateEndLoad()
 {
 	mStateLoad = false;
-}
-
-//-------------------------------------------------------------
-// ICore
-//-------------------------------------------------------------
-void MainSystem::needSwitchToState(std::string xStateName, bool xShowLoadScreen)
-{
-	mCurrentStateName = xStateName;
-	mShowLoadScreen = xShowLoadScreen;
-}
-
-void MainSystem::stateLoadProgress(int xProgressValue, std::string xText)
-{
-	mStatesSystem->injectStateLoadProgress(xProgressValue, xText);
-	mGraphicSystem->needSingleUpdate();
-}
-
-void MainSystem::needShutdown()
-{
-	mNeedShutdown = true;
-}
-
-Ogre::SceneManager* MainSystem::getSceneManager()
-{
-	return mGraphicSystem->getSceneManager();
-}
-
-Ogre::Camera* MainSystem::getCamera()
-{
-	return mGraphicSystem->getCamera();
-}
-
-MyGUI::Gui* MainSystem::getGui()
-{
-	return mGraphicSystem->getGui();
-}
-
-OgreBulletDynamics::DynamicsWorld* MainSystem::getDynamicsWorld()
-{
-	return mPhysicsSystem->getDynamicsWorld();
 }

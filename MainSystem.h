@@ -11,62 +11,70 @@
 #include "StatesSystem.h"
 #include "IState.h"
 
-class MainSystem : public ISystemsListener, public ICore
+namespace JGC
 {
-private:
-	GraphicSystem *mGraphicSystem;
-	PhysicsSystem *mPhysicsSystem;
-	SoundSystem *mSoundSystem;
-	InputSystem *mInputSystem;
-	StatesSystem *mStatesSystem;
+	class MainSystem : public ISystemsListener
+	{
+	private:
+		static MainSystem* mInstance;
 
-	bool mNeedShutdown;
-	bool mStateLoad;
+		Graphic::GraphicSystem *mGraphicSystem;
+		Physics::PhysicsSystem *mPhysicsSystem;
+		Sound::SoundSystem *mSoundSystem;
+		Input::InputSystem *mInputSystem;
+		States::StatesSystem *mStatesSystem;
 
+		bool mNeedShutdown;
+		bool mStateLoad;
 
-	std::string mCurrentStateName;
-	bool mShowLoadScreen;
+		std::string mCurrentStateName;
+		bool mShowLoadScreen;
 
-public:
-	MainSystem(Ogre::String xOgreCfg = "Ogre.cfg",
-		Ogre::String xPluginsCfg = "Plugins.cfg",
-		Ogre::String xResourcesCfg = "Resources.cfg",
-		Ogre::String xOgreLogFile = "Ogre.log",
-		Ogre::String xMyGUILogFile = "MyGUI.log");
-	virtual ~MainSystem();
-	bool init();
-	void run();
+	private:
+		MainSystem(Ogre::String xOgreCfg, Ogre::String xPluginsCfg, Ogre::String xResourcesCfg, Ogre::String xOgreLogFile, Ogre::String xMyGUILogFile);
+		~MainSystem();
 
-	void setLoadState(ILoadScreen *xLoadState);
-	void addNormalState(std::string xStateName, IState *xState);
+	public:
+		//singleton
+		static void initialize(Ogre::String xOgreCfg = "Ogre.cfg",
+			Ogre::String xPluginsCfg = "Plugins.cfg",
+			Ogre::String xResourcesCfg = "Resources.cfg",
+			Ogre::String xOgreLogFile = "Ogre.log",
+			Ogre::String xMyGUILogFile = "MyGUI.log");
+		static void shutdown();
+		static MainSystem* instance();
+		
+		//normal
+		void run();
+		void setLoadState(ILoadScreen *xLoadState);
+		void addNormalState(std::string xStateName, IState *xState);
 
-	//-------------------------------------------------------------
-	// ISystemsListener
-	//-------------------------------------------------------------
-	virtual bool frameStarted(const Ogre::FrameEvent& evt);
-	virtual bool frameEnded(const Ogre::FrameEvent& evt);
-	virtual void windowResized(unsigned int xNewWidth, unsigned int xNewHeight);
-	virtual void windowClosed();
-	virtual	void mouseMoved(const OIS::MouseEvent& e);
-	virtual void mousePressed(const OIS::MouseEvent& e, OIS::MouseButtonID id);
-	virtual void mouseReleased(const OIS::MouseEvent& e, OIS::MouseButtonID id);
-	virtual	void keyPressed(const OIS::KeyEvent& e);
-	virtual void keyReleased(const OIS::KeyEvent& e);
+		void needSwitchToState(std::string xStateName, bool xShowLoadScreen = false);
+		void stateLoadProgress(int xProgressValue, std::string xText);
+		void needShutdown();
 
-	virtual void stateStartLoad();
-	virtual void stateEndLoad();
+		Ogre::SceneManager* getSceneManager();
+		Ogre::Camera* getCamera();
+		MyGUI::Gui* getGui();
+		OgreBulletDynamics::DynamicsWorld* getDynamicsWorld();
 
-	//-------------------------------------------------------------
-	// ICore
-	//-------------------------------------------------------------
-	virtual void needSwitchToState(std::string xStateName, bool xShowLoadScreen = false);
-	virtual void stateLoadProgress(int xProgressValue, std::string xText);
-	virtual void needShutdown();
+	private:
+		//-------------------------------------------------------------
+		// ISystemsListener
+		//-------------------------------------------------------------
+		virtual bool frameStarted(const Ogre::FrameEvent& evt);
+		virtual bool frameEnded(const Ogre::FrameEvent& evt);
+		virtual void windowResized(unsigned int xNewWidth, unsigned int xNewHeight);
+		virtual void windowClosed();
+		virtual	void mouseMoved(const OIS::MouseEvent& e);
+		virtual void mousePressed(const OIS::MouseEvent& e, OIS::MouseButtonID id);
+		virtual void mouseReleased(const OIS::MouseEvent& e, OIS::MouseButtonID id);
+		virtual	void keyPressed(const OIS::KeyEvent& e);
+		virtual void keyReleased(const OIS::KeyEvent& e);
 
-	virtual Ogre::SceneManager* getSceneManager();
-	virtual Ogre::Camera* getCamera();
-	virtual	MyGUI::Gui* getGui();
-	virtual OgreBulletDynamics::DynamicsWorld* getDynamicsWorld();
-};
+		virtual void stateStartLoad();
+		virtual void stateEndLoad();
+	};
+}
 
 #endif

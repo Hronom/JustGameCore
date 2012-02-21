@@ -6,23 +6,29 @@
 #include "OgreBulletDynamicsRigidBody.h"
 #include "Ogre.h"
 
-class PhysicsSystem
+namespace JGC
 {
-private:
-	ISystemsListener *mMainListener;
+	namespace Physics
+	{
+		class PhysicsSystem
+		{
+		private:
+			ISystemsListener *mMainListener;
 
-	OgreBulletDynamics::DynamicsWorld *mDynamicsWorld;   // OgreBullet World
-	OgreBulletCollisions::DebugDrawer *mDebugDrawer;
+			OgreBulletDynamics::DynamicsWorld *mDynamicsWorld;   // OgreBullet World
+			OgreBulletCollisions::DebugDrawer *mDebugDrawer;
 
-public: 
-	PhysicsSystem(ISystemsListener *xMainListener);
-	~PhysicsSystem();
+		public: 
+			PhysicsSystem(ISystemsListener *xMainListener);
+			~PhysicsSystem();
 
-	void init(Ogre::SceneManager *xSceneManager);
+			void init(Ogre::SceneManager *xSceneManager);
 
-	void needUpdate(const Ogre::FrameEvent& evt);
+			void needUpdate(const Ogre::FrameEvent& evt);
 
-	OgreBulletDynamics::DynamicsWorld* getDynamicsWorld();
-};
+			OgreBulletDynamics::DynamicsWorld* getDynamicsWorld();
+		};
+	}
+}
 
 #endif

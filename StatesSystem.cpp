@@ -1,4 +1,6 @@
 #include "StatesSystem.h"
+using namespace JGC;
+using namespace JGC::States;
 
 StatesSystem::StatesSystem(ISystemsListener *xMainListener)
 {

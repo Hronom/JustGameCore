@@ -21,7 +21,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicSystem.h" />
-    <ClInclude Include="ICore.h" />
     <ClInclude Include="ILoadScreen.h" />
     <ClInclude Include="InputSystem.h" />
     <ClInclude Include="IState.h" />

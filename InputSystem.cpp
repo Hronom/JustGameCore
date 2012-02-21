@@ -1,5 +1,6 @@
 #include "InputSystem.h"
-
+using namespace JGC;
+using namespace JGC::Input;
 
 InputSystem::InputSystem(ISystemsListener *xMainListener)
 {

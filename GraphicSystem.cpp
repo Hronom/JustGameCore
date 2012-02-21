@@ -1,4 +1,6 @@
 #include "GraphicSystem.h"
+using namespace JGC;
+using namespace JGC::Graphic;
 
 GraphicSystem::GraphicSystem(ISystemsListener *xMainListener, Ogre::String xOgreCfg, Ogre::String xPluginsCfg,	Ogre::String xResourcesCfg, Ogre::String xOgreLogFile, Ogre::String xMyGUILogFile) 
 { 

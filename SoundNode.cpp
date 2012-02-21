@@ -1,4 +1,6 @@
 #include "SoundNode.h"
+using namespace JGC;
+using namespace JGC::Sound;
 
 SoundNode::SoundNode(ALCdevice *xALCdevice)
 {
@@ -31,7 +33,7 @@ bool SoundNode::open(const std::string &xFilename, bool xLooped, bool xStreamed)
 	alSourcei (mSourceID, AL_LOOPING,  mLooped);
 
 	// Extract ext
-	/*std::string Ext =  (xFilename).data();
+	/*std::string Ext =  (xFilename).xData();
 	if (Ext == "WAV") return loadWavFile(xFilename);
 	if (Ext == "OGG") 
 	{
@@ -78,82 +80,81 @@ void SoundNode::stop()
 bool SoundNode::loadWavFile(const std::string &xFilename)
 {
 	// Структура содержащая аудиопараметры
-	SndInfo    buffer;
+	SndInfo xBuffer;
 	// Формат данных в буфере
-	ALenum    format;
+	ALenum xFormat;
 	// Указатель на массив данных звука
-	ALvoid    *data;
+	ALvoid *xData;
 	// Размер этого массива
-	ALsizei    size;
+	ALsizei xSize;
 	// Частота звука в герцах
-	ALsizei    freq;
+	ALsizei xFreq;
 	// Идентификатор циклического воспроизведения
-	ALboolean  loop;
+	ALboolean xLoop;
 	// Идентификатор буфера
-	ALuint    BufID = 0;
+	ALuint xBufID = 0;
 
 	// Заполняем SndInfo данными
-	buffer.Filename = xFilename;
+	xBuffer.Filename = xFilename;
 	// Ищем, а нет ли уже существующего буфера с данным звуком?
 	for (std::map<ALuint, SndInfo>::iterator i = mBuffers.begin(); i != mBuffers.end(); i++)
 	{
-		if (i->second.Filename == xFilename) BufID = i->first;
+		if (i->second.Filename == xFilename) xBufID = i->first;
 	}
 
 	// Если звук загружаем впервые
-	if (!BufID)
+	if (!xBufID)
 	{
 		// Создаём буфер
-		alGenBuffers(1, &buffer.ID);
+		alGenBuffers(1, &xBuffer.ID);
 		if (!CheckALError()) return false;
 		// Загружаем данные из wav файла
-		alutLoadWAVFile((ALbyte *)xFilename.data(), &format, &data,
-			&size, &freq, &loop);
+		alutLoadWAVFile((ALbyte *)xFilename.data(), &xFormat, &xData,	&xSize, &xFreq, &xLoop);
 		if (!CheckALError()) return false;
 
-		buffer.Format      = format;
-		buffer.Rate      = freq;
+		xBuffer.Format = xFormat;
+		xBuffer.Rate = xFreq;
 		// Заполняем буфер данными
-		alBufferData(buffer.ID, format, data, size, freq);
+		alBufferData(xBuffer.ID, xFormat, xData, xSize, xFreq);
 		if (!CheckALError()) return false;
 		// Выгружаем файл за ненадобностью
-		alutUnloadWAV(format, data, size, freq);
+		alutUnloadWAV(xFormat, xData, xSize, xFreq);
 		if (!CheckALError()) return false;
 
 		// Добавляем этот буфер в массив
-		mBuffers[buffer.ID] = buffer;
+		mBuffers[xBuffer.ID] = xBuffer;
 	}
 	else 
-		buffer = mBuffers[BufID];
+		xBuffer = mBuffers[xBufID];
 
 	// Ассоциируем буфер с источником
-	alSourcei (mSourceID, AL_BUFFER, buffer.ID);
+	alSourcei (mSourceID, AL_BUFFER, xBuffer.ID);
 
 	return true;
 }
 
 ALboolean SoundNode::CheckALCError()
 {
-  ALenum ErrCode;
-  std::string Err = "ALC error: ";
-  if ((ErrCode = alcGetError(mALCdevice)) != ALC_NO_ERROR)
-  {
-    Err += (char *)alcGetString(mALCdevice, ErrCode);
-    //ERRMSG(Err.data());
-    return AL_FALSE;
-  }
-  return AL_TRUE;
+	ALenum xErrCode;
+	std::string xErr = "ALC error: ";
+	if ((xErrCode = alcGetError(mALCdevice)) != ALC_NO_ERROR)
+	{
+		xErr += (char *)alcGetString(mALCdevice, xErrCode);
+		//ERRMSG(xErr.xData());
+		return AL_FALSE;
+	}
+	return AL_TRUE;
 }
 
 ALboolean SoundNode::CheckALError()
 {
-  ALenum ErrCode;
-  std::string Err = "OpenAL error: ";
-  if ((ErrCode = alGetError()) != AL_NO_ERROR)
-  {
-    Err += (char *)alGetString(ErrCode);
-    //ERRMSG(Err.data());
-    return AL_FALSE;
-  }
-  return AL_TRUE;
+	ALenum xErrCode;
+	std::string xErr = "OpenAL error: ";
+	if ((xErrCode = alGetError()) != AL_NO_ERROR)
+	{
+		xErr += (char *)alGetString(xErrCode);
+		//ERRMSG(xErr.xData());
+		return AL_FALSE;
+	}
+	return AL_TRUE;
 }

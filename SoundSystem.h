@@ -2,29 +2,34 @@
 #define SOUNDSYSTEM_H
 
 #include "ISystemsListener.h"
-
 #include <al.h>
 #include <alc.h>
 #include <alut.h>
 
-class SoundSystem
+namespace JGC
 {
-private:
-	ISystemsListener *mMainListener;
+	namespace Sound
+	{
+		class SoundSystem
+		{
+		private:
+			ISystemsListener *mMainListener;
 
-	ALCdevice *mALCdevice;
-	ALCcontext *mALCcontext;
+			ALCdevice *mALCdevice;
+			ALCcontext *mALCcontext;
 
-public:
-	SoundSystem(ISystemsListener *xMainListener);
-	~SoundSystem();
+		public:
+			SoundSystem(ISystemsListener *xMainListener);
+			~SoundSystem();
 
-	bool init();
+			bool init();
 
-private:
-	ALboolean CheckALCError();
-	ALboolean CheckALError();
-};
+		private:
+			ALboolean CheckALCError();
+			ALboolean CheckALError();
+		};
+	}
+}
 
 #endif
 

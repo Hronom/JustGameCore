@@ -9,45 +9,50 @@
 #include <fstream>
 #include <map>
 
-class SoundNode
+namespace JGC
 {
-private:
-	ALCdevice *mALCdevice;
-	// Идентификатор источника
-	ALuint mSourceID;
-	// Потоковый ли наш звук?
-	bool mStreamed;
-	ALfloat mVel[3];
-	ALfloat mPos[3];
-	bool mLooped;
-
-	typedef struct 
+	namespace Sound
 	{
-		unsigned int  ID;
-		std::string    Filename;
-		unsigned int  Rate;
-		unsigned int  Format;
-	} SndInfo;
+		class SoundNode
+		{
+			typedef struct 
+			{
+				unsigned int  ID;
+				std::string    Filename;
+				unsigned int  Rate;
+				unsigned int  Format;
+			} SndInfo;
 
-	std::map<ALuint, SndInfo> mBuffers;
+		private:
+			ALCdevice *mALCdevice;
+			// Идентификатор источника
+			ALuint mSourceID;
+			// Потоковый ли наш звук?
+			bool mStreamed;
+			ALfloat mVel[3];
+			ALfloat mPos[3];
+			bool mLooped;
 
-public:
-	SoundNode(ALCdevice *xALCdevice);
-	virtual ~SoundNode();
+			std::map<ALuint, SndInfo> mBuffers;
 
-	bool open(const std::string &xFilename, bool xLooped, bool xStreamed);
-	bool isStreamed();
-	void play();
-	void close();
-	void update();
-	void move(float xNewX, float xNewY, float xNewZ);
-	void stop();
+		public:
+			SoundNode(ALCdevice *xALCdevice);
+			virtual ~SoundNode();
 
-private:
-	bool loadWavFile (const std::string &xFilename);
-	ALboolean CheckALCError();
-	ALboolean CheckALError();
-};
+			bool open(const std::string &xFilename, bool xLooped, bool xStreamed);
+			bool isStreamed();
+			void play();
+			void close();
+			void update();
+			void move(float xNewX, float xNewY, float xNewZ);
+			void stop();
+
+		private:
+			bool loadWavFile (const std::string &xFilename);
+			ALboolean CheckALCError();
+			ALboolean CheckALError();
+		};
+	}
+}
 
 #endif
-

@@ -1,4 +1,6 @@
 #include "SoundSystem.h"
+using namespace JGC;
+using namespace JGC::Sound;
 
 SoundSystem::SoundSystem(ISystemsListener *xMainListener)
 {
@@ -56,26 +58,26 @@ bool SoundSystem::init()
 
 ALboolean SoundSystem::CheckALCError()
 {
-  ALenum ErrCode;
-  std::string Err = "ALC error: ";
-  if ((ErrCode = alcGetError(mALCdevice)) != ALC_NO_ERROR)
-  {
-    Err += (char *)alcGetString(mALCdevice, ErrCode);
-    //ERRMSG(Err.data());
-    return AL_FALSE;
-  }
-  return AL_TRUE;
+	ALenum ErrCode;
+	std::string Err = "ALC error: ";
+	if ((ErrCode = alcGetError(mALCdevice)) != ALC_NO_ERROR)
+	{
+		Err += (char *)alcGetString(mALCdevice, ErrCode);
+		//ERRMSG(Err.data());
+		return AL_FALSE;
+	}
+	return AL_TRUE;
 }
 
 ALboolean SoundSystem::CheckALError()
 {
-  ALenum ErrCode;
-  std::string Err = "OpenAL error: ";
-  if ((ErrCode = alGetError()) != AL_NO_ERROR)
-  {
-    Err += (char *)alGetString(ErrCode);
-    //ERRMSG(Err.data());
-    return AL_FALSE;
-  }
-  return AL_TRUE;
+	ALenum ErrCode;
+	std::string Err = "OpenAL error: ";
+	if ((ErrCode = alGetError()) != AL_NO_ERROR)
+	{
+		Err += (char *)alGetString(ErrCode);
+		//ERRMSG(Err.data());
+		return AL_FALSE;
+	}
+	return AL_TRUE;
 }

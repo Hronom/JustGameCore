@@ -47,9 +47,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ICore.h">
-      <Filter>Interfaces</Filter>
-    </ClInclude>
     <ClInclude Include="ILoadScreen.h">
       <Filter>Interfaces</Filter>
     </ClInclude>

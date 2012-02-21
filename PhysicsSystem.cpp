@@ -1,4 +1,6 @@
 #include "PhysicsSystem.h"
+using namespace JGC;
+using namespace JGC::Physics;
 
 PhysicsSystem::PhysicsSystem(ISystemsListener *xMainListener)
 {
