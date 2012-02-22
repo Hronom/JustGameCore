@@ -20,7 +20,7 @@ namespace JGC
 
 		Graphic::GraphicSystem *mGraphicSystem;
 		Physics::PhysicsSystem *mPhysicsSystem;
-		Sound::SoundSystem *mSoundSystem;
+		//Sound::SoundSystem *mSoundSystem;
 		Input::InputSystem *mInputSystem;
 		States::StatesSystem *mStatesSystem;
 

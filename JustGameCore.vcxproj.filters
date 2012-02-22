@@ -42,7 +42,10 @@
     <ClCompile Include="MainSystem.cpp">
       <Filter>Systems</Filter>
     </ClCompile>
-    <ClCompile Include="SoundNode.cpp">
+    <ClCompile Include="SoundSource.cpp">
+      <Filter>Systems\SoundSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundListener.cpp">
       <Filter>Systems\SoundSystem</Filter>
     </ClCompile>
   </ItemGroup>
@@ -74,7 +77,10 @@
     <ClInclude Include="MainSystem.h">
       <Filter>Systems</Filter>
     </ClInclude>
-    <ClInclude Include="SoundNode.h">
+    <ClInclude Include="SoundSource.h">
+      <Filter>Systems\SoundSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundListener.h">
       <Filter>Systems\SoundSystem</Filter>
     </ClInclude>
   </ItemGroup>

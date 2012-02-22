@@ -15,7 +15,8 @@
     <ClCompile Include="InputSystem.cpp" />
     <ClCompile Include="MainSystem.cpp" />
     <ClCompile Include="PhysicsSystem.cpp" />
-    <ClCompile Include="SoundNode.cpp" />
+    <ClCompile Include="SoundListener.cpp" />
+    <ClCompile Include="SoundSource.cpp" />
     <ClCompile Include="SoundSystem.cpp" />
     <ClCompile Include="StatesSystem.cpp" />
   </ItemGroup>
@@ -27,7 +28,8 @@
     <ClInclude Include="ISystemsListener.h" />
     <ClInclude Include="MainSystem.h" />
     <ClInclude Include="PhysicsSystem.h" />
-    <ClInclude Include="SoundNode.h" />
+    <ClInclude Include="SoundListener.h" />
+    <ClInclude Include="SoundSource.h" />
     <ClInclude Include="SoundSystem.h" />
     <ClInclude Include="StatesSystem.h" />
   </ItemGroup>
