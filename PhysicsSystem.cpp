@@ -2,6 +2,25 @@
 using namespace JGC;
 using namespace JGC::Physics;
 
+PhysicsSystem* PhysicsSystem::mInstance = 0;
+
+void PhysicsSystem::initialize(ISystemsListener *xMainListener, Ogre::SceneManager *xSceneManager)
+{
+	mInstance = new PhysicsSystem(xMainListener);
+	mInstance->init(xSceneManager);
+}
+
+void PhysicsSystem::shutdown()
+{
+	delete mInstance;
+	mInstance = 0;
+}
+
+PhysicsSystem* PhysicsSystem::instance()
+{
+	return mInstance;
+}
+
 PhysicsSystem::PhysicsSystem(ISystemsListener *xMainListener)
 {
 	mMainListener = xMainListener;

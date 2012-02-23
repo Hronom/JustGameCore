@@ -11,10 +11,12 @@
 
 namespace JGC
 {
+	class MainSystem;
 	namespace Sound
 	{
 		class SoundSystem
 		{
+			friend class MainSystem;
 			struct SndInfo
 			{
 				ALuint ID;
@@ -40,7 +42,6 @@ namespace JGC
 			~SoundSystem();
 
 		public:
-			//singleton
 			static void initialize(ISystemsListener *xMainListener);
 			static void shutdown();
 			static SoundSystem* instance();
@@ -48,7 +49,7 @@ namespace JGC
 			SoundListener* getSoundListener();
 			SoundSource* createSoundSource(float xPosX, float xPosY, float xPosZ, const std::string &xFilename, bool xLooped);
 			void destroySoundSource(SoundSource* xSoundNode);
-			
+
 		private:
 			bool loadWavFile(const std::string &xFilename, ALuint &xSourceID);
 			ALboolean CheckALCError();

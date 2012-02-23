@@ -2,6 +2,25 @@
 using namespace JGC;
 using namespace JGC::Input;
 
+InputSystem* InputSystem::mInstance = 0;
+
+void InputSystem::initialize(ISystemsListener *xMainListener, unsigned int xWinHandle, unsigned int xWinWidth, unsigned int xWinHeight)
+{
+	mInstance = new InputSystem(xMainListener);
+	mInstance->init(xWinHandle, xWinWidth, xWinHeight);
+}
+
+void InputSystem::shutdown()
+{
+	delete mInstance;
+	mInstance = 0;
+}
+
+InputSystem* InputSystem::instance()
+{
+	return mInstance;
+}
+
 InputSystem::InputSystem(ISystemsListener *xMainListener)
 {
 	mMainListener = xMainListener;

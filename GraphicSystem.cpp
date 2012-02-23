@@ -2,7 +2,33 @@
 using namespace JGC;
 using namespace JGC::Graphic;
 
-GraphicSystem::GraphicSystem(ISystemsListener *xMainListener, Ogre::String xOgreCfg, Ogre::String xPluginsCfg,	Ogre::String xResourcesCfg, Ogre::String xOgreLogFile, Ogre::String xMyGUILogFile) 
+GraphicSystem* GraphicSystem::mInstance = 0;
+
+bool GraphicSystem::initialize(ISystemsListener *xMainListener, Ogre::String xOgreCfg, Ogre::String xPluginsCfg, Ogre::String xResourcesCfg, Ogre::String xOgreLogFile, Ogre::String xMyGUILogFile)
+{
+	mInstance = new GraphicSystem(xMainListener, xOgreCfg, xPluginsCfg, xResourcesCfg, xOgreLogFile, xMyGUILogFile);
+	return mInstance->init();
+}
+
+void GraphicSystem::shutdown()
+{
+	delete mInstance;
+	mInstance = 0;
+}
+GraphicSystem* GraphicSystem::instance()
+{
+	return mInstance;
+}
+
+void GraphicSystem::start()
+{
+	//----------------------------------------------------
+	// 9 старт рендера
+	//----------------------------------------------------
+	mRoot->startRendering(); // цикл кончается когда фреймлистенер вернёт false ( что и происходит при нажатии ESCAPE )
+}
+
+GraphicSystem::GraphicSystem(ISystemsListener *xMainListener, Ogre::String xOgreCfg, Ogre::String xPluginsCfg, Ogre::String xResourcesCfg, Ogre::String xOgreLogFile, Ogre::String xMyGUILogFile) 
 { 
 	mMainListener = xMainListener;
 
@@ -129,14 +155,6 @@ bool GraphicSystem::init()
 	return true;
 }
 
-void GraphicSystem::start()
-{
-	//----------------------------------------------------
-	// 9 старт рендера
-	//----------------------------------------------------
-	mRoot->startRendering(); // цикл кончается когда фреймлистенер вернёт false ( что и происходит при нажатии ESCAPE )
-}
-
 bool GraphicSystem::frameStarted(const  Ogre::FrameEvent& evt) 
 {
 	return mMainListener->frameStarted(evt);
@@ -200,7 +218,7 @@ size_t GraphicSystem::getWinHandle()
 {
 	size_t xWinHandle = 0;
 	mRenderWindow->getCustomAttribute("WINDOW", &xWinHandle);
-	
+
 	return xWinHandle;
 }
 

@@ -1,15 +1,20 @@
 #include "MainSystem.h"
+#include "GraphicSystem.h"
+#include "PhysicsSystem.h"
+#include "SoundSystem.h"
+#include "InputSystem.h"
+#include "StatesSystem.h"
 using namespace JGC;
 
 MainSystem* MainSystem::mInstance = 0;
 
 MainSystem::MainSystem(Ogre::String xOgreCfg, Ogre::String xPluginsCfg, Ogre::String xResourcesCfg, Ogre::String xOgreLogFile, Ogre::String xMyGUILogFile)
 {
-	mGraphicSystem = new Graphic::GraphicSystem(this, xOgreCfg, xPluginsCfg, xResourcesCfg, xOgreLogFile, xMyGUILogFile);
-	mPhysicsSystem = new Physics::PhysicsSystem(this);
+	//mGraphicSystem = new Graphic::GraphicSystem(this, xOgreCfg, xPluginsCfg, xResourcesCfg, xOgreLogFile, xMyGUILogFile);
+	//mPhysicsSystem = new Physics::PhysicsSystem(this);
 	//mSoundSystem = new Sound::SoundSystem(this);
-	mInputSystem = new Input::InputSystem(this);
-	mStatesSystem = new States::StatesSystem(this);
+	//mInputSystem = new Input::InputSystem(this);
+	//mStatesSystem = new States::StatesSystem(this);
 
 	mNeedShutdown = false;
 	mStateLoad = false;
@@ -17,20 +22,23 @@ MainSystem::MainSystem(Ogre::String xOgreCfg, Ogre::String xPluginsCfg, Ogre::St
 	mCurrentStateName = "";
 	mShowLoadScreen = false;
 
-	mGraphicSystem->init();
-	mPhysicsSystem->init(mGraphicSystem->getSceneManager());
+	Graphic::GraphicSystem::initialize(this, xOgreCfg, xPluginsCfg, xResourcesCfg, xOgreLogFile, xMyGUILogFile);
+	Physics::PhysicsSystem::initialize(this, Graphic::GraphicSystem::instance()->getSceneManager());
 	Sound::SoundSystem::initialize(this);
-	mInputSystem->init(mGraphicSystem->getWinHandle(), mGraphicSystem->getWinWidth(), mGraphicSystem->getWinHeight());
-	mStatesSystem->init();
+	Input::InputSystem::initialize(this, 
+		Graphic::GraphicSystem::instance()->getWinHandle(),
+		Graphic::GraphicSystem::instance()->getWinWidth(), 
+		Graphic::GraphicSystem::instance()->getWinHeight());
+	States::StatesSystem::initialize(this);
 }
 
 MainSystem::~MainSystem()
 {
-	delete mStatesSystem;
-	delete mInputSystem;
+	States::StatesSystem::shutdown();
+	Input::InputSystem::shutdown();
 	Sound::SoundSystem::shutdown();
-	delete mPhysicsSystem;
-	delete mGraphicSystem;
+	Physics::PhysicsSystem::shutdown();
+	Graphic::GraphicSystem::shutdown();
 }
 
 void MainSystem::initialize(Ogre::String xOgreCfg, Ogre::String xPluginsCfg, Ogre::String xResourcesCfg, Ogre::String xOgreLogFile, Ogre::String xMyGUILogFile)
@@ -51,17 +59,7 @@ MainSystem* MainSystem::instance()
 
 void MainSystem::run()
 {
-	mGraphicSystem->start();
-}
-
-void  MainSystem::setLoadState(ILoadScreen *xLoadState)
-{
-	mStatesSystem->setLoadState(xLoadState);
-}
-
-void MainSystem::addNormalState(std::string xStateName, IState *xState)
-{
-	mStatesSystem->addNormalState(xStateName, xState);
+	Graphic::GraphicSystem::instance()->start();
 }
 
 void MainSystem::needSwitchToState(std::string xStateName, bool xShowLoadScreen)
@@ -72,33 +70,13 @@ void MainSystem::needSwitchToState(std::string xStateName, bool xShowLoadScreen)
 
 void MainSystem::stateLoadProgress(int xProgressValue, std::string xText)
 {
-	mStatesSystem->injectStateLoadProgress(xProgressValue, xText);
-	mGraphicSystem->needSingleUpdate();
+	States::StatesSystem::instance()->injectStateLoadProgress(xProgressValue, xText);
+	Graphic::GraphicSystem::instance()->needSingleUpdate();
 }
 
 void MainSystem::needShutdown()
 {
 	mNeedShutdown = true;
-}
-
-Ogre::SceneManager* MainSystem::getSceneManager()
-{
-	return mGraphicSystem->getSceneManager();
-}
-
-Ogre::Camera* MainSystem::getCamera()
-{
-	return mGraphicSystem->getCamera();
-}
-
-MyGUI::Gui* MainSystem::getGui()
-{
-	return mGraphicSystem->getGui();
-}
-
-OgreBulletDynamics::DynamicsWorld* MainSystem::getDynamicsWorld()
-{
-	return mPhysicsSystem->getDynamicsWorld();
 }
 
 //-------------------------------------------------------------
@@ -108,15 +86,15 @@ bool MainSystem::frameStarted(const Ogre::FrameEvent& evt)
 {
 	if(mStateLoad != true)
 	{
-		if(mStatesSystem->getCurrentStateName() != mCurrentStateName)
+		if(States::StatesSystem::instance()->getCurrentStateName() != mCurrentStateName)
 		{
-			mStatesSystem->switchToState(mCurrentStateName, mShowLoadScreen);
+			States::StatesSystem::instance()->switchToState(mCurrentStateName, mShowLoadScreen);
 		}
 		else
 		{
-			mPhysicsSystem->needUpdate(evt);
-			mInputSystem->needUpdate();
-			mStatesSystem->needUpdate(evt);
+			Physics::PhysicsSystem::instance()->needUpdate(evt);
+			Input::InputSystem::instance()->needUpdate();
+			States::StatesSystem::instance()->needUpdate(evt);
 		}
 	}
 
@@ -130,7 +108,7 @@ bool MainSystem::frameEnded(const Ogre::FrameEvent& evt)
 
 void MainSystem::windowResized(unsigned int xNewWidth, unsigned int xNewHeight)
 {
-	mInputSystem->injectWindowResized(xNewWidth, xNewHeight);
+	Input::InputSystem::instance()->injectWindowResized(xNewWidth, xNewHeight);
 }
 
 void MainSystem::windowClosed()
@@ -140,32 +118,32 @@ void MainSystem::windowClosed()
 
 void MainSystem::mouseMoved(const OIS::MouseEvent& e)
 {
-	mGraphicSystem->injectMouseMoved(e);
-	mStatesSystem->injectMouseMoved(e);
+	Graphic::GraphicSystem::instance()->injectMouseMoved(e);
+	States::StatesSystem::instance()->injectMouseMoved(e);
 }
 
 void MainSystem::mousePressed(const OIS::MouseEvent& e, OIS::MouseButtonID id)
 {
-	mGraphicSystem->injectMousePressed(e, id);
-	mStatesSystem->injectMousePressed(e, id);
+	Graphic::GraphicSystem::instance()->injectMousePressed(e, id);
+	States::StatesSystem::instance()->injectMousePressed(e, id);
 }
 
 void MainSystem::mouseReleased(const OIS::MouseEvent& e, OIS::MouseButtonID id)
 {
-	mGraphicSystem->injectMouseReleased(e, id);
-	mStatesSystem->injectMouseReleased(e, id);
+	Graphic::GraphicSystem::instance()->injectMouseReleased(e, id);
+	States::StatesSystem::instance()->injectMouseReleased(e, id);
 }
 
 void MainSystem::keyPressed(const OIS::KeyEvent& e)
 {
-	mGraphicSystem->injectKeyPressed(e);
-	mStatesSystem->injectKeyPressed(e);
+	Graphic::GraphicSystem::instance()->injectKeyPressed(e);
+	States::StatesSystem::instance()->injectKeyPressed(e);
 }
 
 void MainSystem::keyReleased(const OIS::KeyEvent& e)
 {
-	mGraphicSystem->injectKeyReleased(e);
-	mStatesSystem->injectKeyReleased(e);
+	Graphic::GraphicSystem::instance()->injectKeyReleased(e);
+	States::StatesSystem::instance()->injectKeyReleased(e);
 }
 
 void MainSystem::stateStartLoad()

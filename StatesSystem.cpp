@@ -2,6 +2,25 @@
 using namespace JGC;
 using namespace JGC::States;
 
+StatesSystem* StatesSystem::mInstance = 0;
+
+bool StatesSystem::initialize(ISystemsListener *xMainListener)
+{
+	mInstance = new StatesSystem(xMainListener);
+	return mInstance->init();
+}
+
+void StatesSystem::shutdown()
+{
+	delete mInstance;
+	mInstance = 0;
+}
+
+StatesSystem* StatesSystem::instance()
+{
+	return mInstance;
+}
+
 StatesSystem::StatesSystem(ISystemsListener *xMainListener)
 {
 	mMainListener = xMainListener;
@@ -70,16 +89,6 @@ void StatesSystem::injectStateLoadProgress(int xProgressValue, std::string xText
 	if(mLoadState != 0) mLoadState->setProgress(xProgressValue, xText);
 }
 
-void StatesSystem::setLoadState(ILoadScreen *xLoadState)
-{
-	mLoadState = xLoadState;
-}
-
-void StatesSystem::addNormalState(std::string xStateName, IState *xState)
-{
-	mStatesMap[xStateName] = xState;
-}
-
 void StatesSystem::switchToState(std::string xStateName, bool xShowLoadScreen)
 {
 	mMainListener->stateStartLoad();
@@ -112,6 +121,16 @@ void StatesSystem::switchToState(std::string xStateName, bool xShowLoadScreen)
 	}
 
 	mMainListener->stateEndLoad();
+}
+
+void StatesSystem::setLoadState(ILoadScreen *xLoadState)
+{
+	mLoadState = xLoadState;
+}
+
+void StatesSystem::addNormalState(std::string xStateName, IState *xState)
+{
+	mStatesMap[xStateName] = xState;
 }
 
 std::string StatesSystem::getCurrentStateName()
