@@ -3,8 +3,8 @@
 
 #include "ISystemsListener.h"
 
-#include "OgreBulletDynamicsRigidBody.h"
-#include "Ogre.h"
+#include <Ogre.h>
+#include <btBulletDynamicsCommon.h>
 
 namespace JGC
 {
@@ -19,8 +19,11 @@ namespace JGC
 
 			ISystemsListener *mMainListener;
 
-			OgreBulletDynamics::DynamicsWorld *mDynamicsWorld;   // OgreBullet World
-			OgreBulletCollisions::DebugDrawer *mDebugDrawer;
+			btBroadphaseInterface* mBroadphase;
+			btDefaultCollisionConfiguration* mCollisionConfiguration;
+			btCollisionDispatcher* mDispatcher;
+			btSequentialImpulseConstraintSolver* mSolver;
+			btDiscreteDynamicsWorld* mDynamicsWorld;
 
 		public:
 			static void initialize(ISystemsListener *xMainListener, Ogre::SceneManager *xSceneManager);
@@ -33,7 +36,7 @@ namespace JGC
 			void init(Ogre::SceneManager *xSceneManager);
 			void needUpdate(const Ogre::FrameEvent& evt);
 		public:
-			OgreBulletDynamics::DynamicsWorld* getDynamicsWorld();
+			btDiscreteDynamicsWorld* getDynamicsWorld();
 		};
 	}
 }

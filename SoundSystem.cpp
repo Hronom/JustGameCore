@@ -4,6 +4,22 @@ using namespace JGC::Sound;
 
 SoundSystem* SoundSystem::mInstance = 0;
 
+void SoundSystem::initialize(ISystemsListener *xMainListener)
+{
+	mInstance = new SoundSystem(xMainListener);
+}
+
+void SoundSystem::shutdown()
+{
+	delete mInstance;
+	mInstance = 0;
+}
+
+SoundSystem* SoundSystem::instance()
+{
+	return mInstance;
+}
+
 SoundSystem::SoundSystem(ISystemsListener *xMainListener)
 {
 	mMainListener = xMainListener;
@@ -29,6 +45,15 @@ SoundSystem::SoundSystem(ISystemsListener *xMainListener)
 
 SoundSystem::~SoundSystem()
 {
+	std::list<SoundSource*>::iterator xElement;
+	xElement = mSoundSources.begin();
+	while(xElement != mSoundSources.end())
+	{
+		delete (*xElement);
+		++xElement;
+	}
+	mSoundSources.clear();
+
 	if(mSoundListener != 0)
 	{
 		delete mSoundListener;
@@ -44,69 +69,6 @@ SoundSystem::~SoundSystem()
 	alcDestroyContext(mALCcontext);
 	// Закрываем звуковое устройство
 	alcCloseDevice(mALCdevice);
-}
-
-void SoundSystem::initialize(ISystemsListener *xMainListener)
-{
-	mInstance = new SoundSystem(xMainListener);
-}
-
-void SoundSystem::shutdown()
-{
-	delete mInstance;
-	mInstance = 0;
-}
-
-SoundSystem* SoundSystem::instance()
-{
-	return mInstance;
-}
-
-SoundListener* SoundSystem::getSoundListener()
-{
-	return mSoundListener;
-}
-
-SoundSource* SoundSystem::createSoundSource(float xPosX, float xPosY, float xPosZ, const std::string &xFilename, bool xLooped)
-{
-	SoundSource *xSoundNode = new SoundSource();
-
-	ALuint xSourceID;
-	// Проверяем файл на наличие
-	std::ifstream a(xFilename.c_str());
-	if (!a.is_open())
-	{
-		xSoundNode->setError("Cant open file", false);
-		return xSoundNode;
-	}
-	a.close();
-
-	ALfloat xVel[3];
-	ALfloat xPos[3] = { xPosX, xPosY, xPosZ };
-
-	// Создаем источник соответствующий нашему звуку
-	alGenSources(1, &xSourceID);
-	if (!CheckALError())
-	{
-		xSoundNode->setError("ALError", false);
-		return xSoundNode;
-	}
-
-	alSourcef (xSourceID, AL_PITCH, 1.0f);
-	alSourcef (xSourceID, AL_GAIN, 1.0f);
-	alSourcefv(xSourceID, AL_POSITION, xPos);
-	alSourcefv(xSourceID, AL_VELOCITY, xVel);
-	alSourcei (xSourceID, AL_LOOPING, xLooped);
-
-	loadWavFile(xFilename, xSourceID);
-
-	xSoundNode->init(xSourceID, xLooped);
-	return xSoundNode;
-}
-
-void SoundSystem::destroySoundSource(SoundSource* xSoundNode)
-{
-	delete xSoundNode;
 }
 
 bool SoundSystem::loadWavFile(const std::string &xFilename, ALuint &xSourceID)
@@ -189,4 +151,54 @@ ALboolean SoundSystem::CheckALError()
 		return AL_FALSE;
 	}
 	return AL_TRUE;
+}
+
+SoundListener* SoundSystem::getSoundListener()
+{
+	return mSoundListener;
+}
+
+SoundSource* SoundSystem::createSoundSource(float xPosX, float xPosY, float xPosZ, const std::string &xFilename, bool xLooped)
+{
+	SoundSource *xSoundNode = new SoundSource();
+	mSoundSources.push_back(xSoundNode);
+
+	ALuint xSourceID;
+	// Проверяем файл на наличие
+	std::ifstream a(xFilename.c_str());
+	if (!a.is_open())
+	{
+		xSoundNode->setError("Cant open file", false);
+		return xSoundNode;
+	}
+	a.close();
+
+	ALfloat xVel[3];
+	ALfloat xPos[3] = { xPosX, xPosY, xPosZ };
+
+	// Создаем источник соответствующий нашему звуку
+	alGenSources(1, &xSourceID);
+	if (!CheckALError())
+	{
+		xSoundNode->setError("ALError", false);
+		return xSoundNode;
+	}
+
+	alSourcef (xSourceID, AL_PITCH, 1.0f);
+	alSourcef (xSourceID, AL_GAIN, 1.0f);
+	alSourcefv(xSourceID, AL_POSITION, xPos);
+	alSourcefv(xSourceID, AL_VELOCITY, xVel);
+	alSourcei (xSourceID, AL_LOOPING, xLooped);
+
+	loadWavFile(xFilename, xSourceID);
+
+	xSoundNode->init(xSourceID, xLooped);
+	return xSoundNode;
+}
+
+void SoundSystem::destroySoundSource(SoundSource* xSoundNode)
+{
+	mSoundSources.remove(xSoundNode);
+
+	delete xSoundNode;
 }

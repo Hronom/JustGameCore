@@ -36,24 +36,24 @@ namespace JGC
 			SoundListener *mSoundListener;
 
 			std::map<ALuint, SndInfo> mBuffers;
-
-		private:
-			SoundSystem(ISystemsListener *xMainListener);
-			~SoundSystem();
+			std::list<SoundSource*> mSoundSources;
 
 		public:
 			static void initialize(ISystemsListener *xMainListener);
 			static void shutdown();
 			static SoundSystem* instance();
 
-			SoundListener* getSoundListener();
-			SoundSource* createSoundSource(float xPosX, float xPosY, float xPosZ, const std::string &xFilename, bool xLooped);
-			void destroySoundSource(SoundSource* xSoundNode);
-
 		private:
+			SoundSystem(ISystemsListener *xMainListener);
+			~SoundSystem();
 			bool loadWavFile(const std::string &xFilename, ALuint &xSourceID);
 			ALboolean CheckALCError();
 			ALboolean CheckALError();
+
+		public:
+			SoundListener* getSoundListener();
+			SoundSource* createSoundSource(float xPosX, float xPosY, float xPosZ, const std::string &xFilename, bool xLooped);
+			void destroySoundSource(SoundSource* xSoundNode);
 		};
 	}
 }

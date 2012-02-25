@@ -48,6 +48,10 @@
     <ClCompile Include="SoundListener.cpp">
       <Filter>Systems\SoundSystem</Filter>
     </ClCompile>
+    <ClCompile Include="MyMotionState.cpp">
+      <Filter>Systems\PhysicsSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ILoadScreen.h">
@@ -83,5 +87,9 @@
     <ClInclude Include="SoundListener.h">
       <Filter>Systems\SoundSystem</Filter>
     </ClInclude>
+    <ClInclude Include="MyMotionState.h">
+      <Filter>Systems\PhysicsSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h" />
   </ItemGroup>
 </Project>
