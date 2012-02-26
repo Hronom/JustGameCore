@@ -35,6 +35,8 @@ namespace JGC
 			~PhysicsSystem();
 			void init(Ogre::SceneManager *xSceneManager);
 			void needUpdate(const Ogre::FrameEvent& evt);
+			void setDebugDrawer(btIDebugDraw* xBtIDebugDraw);
+
 		public:
 			btDiscreteDynamicsWorld* getDynamicsWorld();
 		};

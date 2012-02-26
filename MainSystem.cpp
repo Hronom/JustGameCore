@@ -10,12 +10,7 @@ MainSystem* MainSystem::mInstance = 0;
 
 MainSystem::MainSystem(Ogre::String xOgreCfg, Ogre::String xPluginsCfg, Ogre::String xResourcesCfg, Ogre::String xOgreLogFile, Ogre::String xMyGUILogFile)
 {
-	//mGraphicSystem = new Graphic::GraphicSystem(this, xOgreCfg, xPluginsCfg, xResourcesCfg, xOgreLogFile, xMyGUILogFile);
-	//mPhysicsSystem = new Physics::PhysicsSystem(this);
-	//mSoundSystem = new Sound::SoundSystem(this);
-	//mInputSystem = new Input::InputSystem(this);
-	//mStatesSystem = new States::StatesSystem(this);
-
+	mPhysicsDebugDrawer = 0;
 	mNeedShutdown = false;
 	mStateLoad = false;
 
@@ -30,6 +25,10 @@ MainSystem::MainSystem(Ogre::String xOgreCfg, Ogre::String xPluginsCfg, Ogre::St
 		Graphic::GraphicSystem::instance()->getWinWidth(), 
 		Graphic::GraphicSystem::instance()->getWinHeight());
 	States::StatesSystem::initialize(this);
+
+	/*mPhysicsDebugDrawer = new PhysicsDebugDrawer(Graphic::GraphicSystem::instance()->getSceneManager());
+	mPhysicsDebugDrawer->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
+	Physics::PhysicsSystem::instance()->setDebugDrawer(mPhysicsDebugDrawer);*/
 }
 
 MainSystem::~MainSystem()
@@ -93,8 +92,10 @@ bool MainSystem::frameStarted(const Ogre::FrameEvent& evt)
 		else
 		{
 			Physics::PhysicsSystem::instance()->needUpdate(evt);
+			//mPhysicsDebugDrawer->frameStarted(evt);
 			Input::InputSystem::instance()->needUpdate();
 			States::StatesSystem::instance()->needUpdate(evt);
+
 		}
 	}
 
@@ -103,6 +104,8 @@ bool MainSystem::frameStarted(const Ogre::FrameEvent& evt)
 
 bool MainSystem::frameEnded(const Ogre::FrameEvent& evt)
 {
+	//mPhysicsDebugDrawer->frameEnded(evt);
+
 	return !mNeedShutdown;
 }
 

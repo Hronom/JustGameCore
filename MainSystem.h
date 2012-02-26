@@ -5,6 +5,7 @@
 
 #include "ISystemsListener.h"
 #include "IState.h"
+#include "PhysicsDebugDrawer.h"
 
 namespace JGC
 {
@@ -12,6 +13,8 @@ namespace JGC
 	{
 	private:
 		static MainSystem* mInstance;
+
+		PhysicsDebugDrawer *mPhysicsDebugDrawer;
 
 		bool mNeedShutdown;
 		bool mStateLoad;

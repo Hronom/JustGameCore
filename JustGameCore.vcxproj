@@ -15,6 +15,7 @@
     <ClCompile Include="InputSystem.cpp" />
     <ClCompile Include="MainSystem.cpp" />
     <ClCompile Include="MyMotionState.cpp" />
+    <ClCompile Include="PhysicsDebugDrawer.cpp" />
     <ClCompile Include="PhysicsSystem.cpp" />
     <ClCompile Include="SoundListener.cpp" />
     <ClCompile Include="SoundSource.cpp" />
@@ -30,6 +31,7 @@
     <ClInclude Include="ISystemsListener.h" />
     <ClInclude Include="MainSystem.h" />
     <ClInclude Include="MyMotionState.h" />
+    <ClInclude Include="PhysicsDebugDrawer.h" />
     <ClInclude Include="PhysicsSystem.h" />
     <ClInclude Include="SoundListener.h" />
     <ClInclude Include="SoundSource.h" />

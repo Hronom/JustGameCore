@@ -55,6 +55,12 @@ void PhysicsSystem::init(Ogre::SceneManager *xSceneManager)
 void PhysicsSystem::needUpdate(const Ogre::FrameEvent& evt)
 {
 	mDynamicsWorld->stepSimulation(evt.timeSinceLastFrame, 10);	// update Bullet Physics animation
+	mDynamicsWorld->debugDrawWorld();
+}
+
+void PhysicsSystem::setDebugDrawer(btIDebugDraw* xBtIDebugDraw)
+{
+	mDynamicsWorld->setDebugDrawer(xBtIDebugDraw);
 }
 
 btDiscreteDynamicsWorld* PhysicsSystem::getDynamicsWorld()

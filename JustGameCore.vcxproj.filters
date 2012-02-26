@@ -52,6 +52,7 @@
       <Filter>Systems\PhysicsSystem</Filter>
     </ClCompile>
     <ClCompile Include="Utils.cpp" />
+    <ClCompile Include="PhysicsDebugDrawer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ILoadScreen.h">
@@ -91,5 +92,6 @@
       <Filter>Systems\PhysicsSystem</Filter>
     </ClInclude>
     <ClInclude Include="Utils.h" />
+    <ClInclude Include="PhysicsDebugDrawer.h" />
   </ItemGroup>
 </Project>
