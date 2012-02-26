@@ -30,7 +30,7 @@ namespace JGC
 			InputSystem(ISystemsListener *xMainListener);
 			~InputSystem();
 			void init(unsigned int xWinHandle, unsigned int xWinWidth, unsigned int xWinHeight);
-			void needUpdate();
+			void injectUpdate();
 			void injectWindowResized(unsigned int xNewWidth, unsigned int xNewHeight);
 			bool mouseMoved(const OIS::MouseEvent& e);
 			bool mousePressed(const OIS::MouseEvent& e, OIS::MouseButtonID id);

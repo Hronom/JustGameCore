@@ -157,12 +157,12 @@ bool GraphicSystem::init()
 
 bool GraphicSystem::frameStarted(const  Ogre::FrameEvent& evt) 
 {
-	return mMainListener->frameStarted(evt);
+	return mMainListener->frameStarted(evt.timeSinceLastFrame);
 }
 
 bool GraphicSystem::frameEnded(const Ogre::FrameEvent& evt)
 {
-	return mMainListener->frameEnded(evt);
+	return mMainListener->frameEnded(evt.timeSinceLastFrame);
 }
 
 void GraphicSystem::windowResized(Ogre::RenderWindow* xRenderWindow)

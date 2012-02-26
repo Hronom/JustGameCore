@@ -29,6 +29,10 @@ StatesSystem::StatesSystem(ISystemsListener *xMainListener)
 	mCurrentState = 0;
 
 	mCurrentStateName = "";
+	mNeedStateName = "";
+	mShowLoadScreen = false;
+	mStateSwitching = false;
+	mBeginStateSwitch = false;
 }
 
 StatesSystem::~StatesSystem()
@@ -54,34 +58,35 @@ bool StatesSystem::init()
 	return true;
 }
 
-void StatesSystem::needUpdate(const Ogre::FrameEvent& evt)
+void StatesSystem::injectUpdate(const float& xTimeSinceLastFrame)
 {
-	if(mCurrentState != 0) mCurrentState->needUpdate(evt);
+	if(mBeginStateSwitch == true) beginStateSwitch();
+	if(mCurrentState != 0 && mStateSwitching == false) mCurrentState->injectUpdate(xTimeSinceLastFrame);
 }
 
 void StatesSystem::injectMouseMoved(const OIS::MouseEvent& e)
 {
-	if(mCurrentState != 0) mCurrentState->mouseMoved(e);
+	if(mCurrentState != 0) mCurrentState->injectMouseMoved(e);
 }
 
 void StatesSystem::injectMousePressed(const OIS::MouseEvent& e, OIS::MouseButtonID id)
 {
-	if(mCurrentState != 0) mCurrentState->mousePressed(e, id);
+	if(mCurrentState != 0) mCurrentState->injectMousePressed(e, id);
 }
 
 void StatesSystem::injectMouseReleased(const OIS::MouseEvent& e, OIS::MouseButtonID id)
 {
-	if(mCurrentState != 0) mCurrentState->mouseReleased(e, id);
+	if(mCurrentState != 0) mCurrentState->injectMouseReleased(e, id);
 }
 
 void StatesSystem::injectKeyPressed(const OIS::KeyEvent& e)
 {
-	if(mCurrentState != 0) mCurrentState->keyPressed(e);
+	if(mCurrentState != 0) mCurrentState->injectKeyPressed(e);
 }
 
 void StatesSystem::injectKeyReleased(const OIS::KeyEvent& e)
 {
-	if(mCurrentState != 0) mCurrentState->keyReleased(e);
+	if(mCurrentState != 0) mCurrentState->injectKeyReleased(e);
 }
 
 void StatesSystem::injectStateLoadProgress(int xProgressValue, std::string xText)
@@ -89,11 +94,11 @@ void StatesSystem::injectStateLoadProgress(int xProgressValue, std::string xText
 	if(mLoadState != 0) mLoadState->setProgress(xProgressValue, xText);
 }
 
-void StatesSystem::switchToState(std::string xStateName, bool xShowLoadScreen)
+void StatesSystem::beginStateSwitch()
 {
-	mMainListener->stateStartLoad();
+	mBeginStateSwitch = false;
 
-	if(mStatesMap.count(xStateName) > 0)
+	if(mStatesMap.count(mNeedStateName) > 0)
 	{
 		if(mCurrentState != 0)
 		{
@@ -101,10 +106,10 @@ void StatesSystem::switchToState(std::string xStateName, bool xShowLoadScreen)
 			mCurrentState = 0;
 		}
 
-		if(xShowLoadScreen == true && mLoadState != 0)
+		if(mShowLoadScreen == true && mLoadState != 0)
 		{
 			mLoadState->show();
-			mCurrentState = mStatesMap[xStateName];
+			mCurrentState = mStatesMap[mNeedStateName];
 			mCurrentState->prepareState();
 			mLoadState->hide();
 			
@@ -112,15 +117,23 @@ void StatesSystem::switchToState(std::string xStateName, bool xShowLoadScreen)
 		}
 		else
 		{
-			mCurrentState = mStatesMap[xStateName];
+			mCurrentState = mStatesMap[mNeedStateName];
 			mCurrentState->prepareState();
 			mCurrentState->enter();
 		}
 
-		mCurrentStateName = xStateName;
+		mCurrentStateName = mNeedStateName;
 	}
 
-	mMainListener->stateEndLoad();
+	mStateSwitching = false;
+}
+
+void StatesSystem::needSwitchToState(std::string xStateName, bool xShowLoadScreen)
+{
+	mNeedStateName = xStateName;
+	mShowLoadScreen = xShowLoadScreen;
+	mStateSwitching = true;
+	mBeginStateSwitch = true;
 }
 
 void StatesSystem::setLoadState(ILoadScreen *xLoadState)

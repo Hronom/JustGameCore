@@ -4,9 +4,6 @@
     <Filter Include="Systems">
       <UniqueIdentifier>{07ab8703-0296-45e4-a7a6-393b65af8ff3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Interfaces">
-      <UniqueIdentifier>{f6d987a3-64d1-4ab6-b93b-29df755e4a02}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Systems\GraphicSystem">
       <UniqueIdentifier>{df601f8a-8faa-46c8-8647-035c1d9407b0}</UniqueIdentifier>
     </Filter>
@@ -55,15 +52,6 @@
     <ClCompile Include="PhysicsDebugDrawer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ILoadScreen.h">
-      <Filter>Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="IState.h">
-      <Filter>Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="ISystemsListener.h">
-      <Filter>Interfaces</Filter>
-    </ClInclude>
     <ClInclude Include="GraphicSystem.h">
       <Filter>Systems\GraphicSystem</Filter>
     </ClInclude>
@@ -93,5 +81,12 @@
     </ClInclude>
     <ClInclude Include="Utils.h" />
     <ClInclude Include="PhysicsDebugDrawer.h" />
+    <ClInclude Include="IState.h">
+      <Filter>Systems\StatesSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="ISystemsListener.h" />
+    <ClInclude Include="ILoadScreen.h">
+      <Filter>Systems\StatesSystem</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

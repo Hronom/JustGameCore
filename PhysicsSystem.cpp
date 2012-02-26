@@ -52,9 +52,9 @@ void PhysicsSystem::init(Ogre::SceneManager *xSceneManager)
 	mDynamicsWorld->setGravity(btVector3(0,0,0));
 }
 
-void PhysicsSystem::needUpdate(const Ogre::FrameEvent& evt)
+void PhysicsSystem::injectUpdate(const float& xTimeSinceLastFrame)
 {
-	mDynamicsWorld->stepSimulation(evt.timeSinceLastFrame, 10);	// update Bullet Physics animation
+	mDynamicsWorld->stepSimulation(xTimeSinceLastFrame, 10);	// update Bullet Physics animation
 	mDynamicsWorld->debugDrawWorld();
 }
 

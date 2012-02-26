@@ -12,10 +12,6 @@ MainSystem::MainSystem(Ogre::String xOgreCfg, Ogre::String xPluginsCfg, Ogre::St
 {
 	mPhysicsDebugDrawer = 0;
 	mNeedShutdown = false;
-	mStateLoad = false;
-
-	mCurrentStateName = "";
-	mShowLoadScreen = false;
 
 	Graphic::GraphicSystem::initialize(this, xOgreCfg, xPluginsCfg, xResourcesCfg, xOgreLogFile, xMyGUILogFile);
 	Physics::PhysicsSystem::initialize(this, Graphic::GraphicSystem::instance()->getSceneManager());
@@ -61,12 +57,6 @@ void MainSystem::run()
 	Graphic::GraphicSystem::instance()->start();
 }
 
-void MainSystem::needSwitchToState(std::string xStateName, bool xShowLoadScreen)
-{
-	mCurrentStateName = xStateName;
-	mShowLoadScreen = xShowLoadScreen;
-}
-
 void MainSystem::stateLoadProgress(int xProgressValue, std::string xText)
 {
 	States::StatesSystem::instance()->injectStateLoadProgress(xProgressValue, xText);
@@ -81,30 +71,26 @@ void MainSystem::needShutdown()
 //-------------------------------------------------------------
 // ISystemsListener
 //-------------------------------------------------------------
-bool MainSystem::frameStarted(const Ogre::FrameEvent& evt)
+bool MainSystem::frameStarted(const float& xTimeSinceLastFrame)
 {
-	if(mStateLoad != true)
+	if(States::StatesSystem::instance()->isStateSwitching() == true)
 	{
-		if(States::StatesSystem::instance()->getCurrentStateName() != mCurrentStateName)
-		{
-			States::StatesSystem::instance()->switchToState(mCurrentStateName, mShowLoadScreen);
-		}
-		else
-		{
-			Physics::PhysicsSystem::instance()->needUpdate(evt);
-			//mPhysicsDebugDrawer->frameStarted(evt);
-			Input::InputSystem::instance()->needUpdate();
-			States::StatesSystem::instance()->needUpdate(evt);
-
-		}
+		States::StatesSystem::instance()->injectUpdate(xTimeSinceLastFrame);
+	}
+	else
+	{
+		Physics::PhysicsSystem::instance()->injectUpdate(xTimeSinceLastFrame);
+		//mPhysicsDebugDrawer->frameStarted(xTimeSinceLastFrame);
+		Input::InputSystem::instance()->injectUpdate();
+		States::StatesSystem::instance()->injectUpdate(xTimeSinceLastFrame);
 	}
 
 	return !mNeedShutdown;
 }
 
-bool MainSystem::frameEnded(const Ogre::FrameEvent& evt)
+bool MainSystem::frameEnded(const float& xTimeSinceLastFrame)
 {
-	//mPhysicsDebugDrawer->frameEnded(evt);
+	//mPhysicsDebugDrawer->frameEnded(xTimeSinceLastFrame);
 
 	return !mNeedShutdown;
 }
@@ -119,42 +105,32 @@ void MainSystem::windowClosed()
 	mNeedShutdown = true;
 }
 
-void MainSystem::mouseMoved(const OIS::MouseEvent& e)
+void MainSystem::injectMouseMoved(const OIS::MouseEvent& e)
 {
 	Graphic::GraphicSystem::instance()->injectMouseMoved(e);
 	States::StatesSystem::instance()->injectMouseMoved(e);
 }
 
-void MainSystem::mousePressed(const OIS::MouseEvent& e, OIS::MouseButtonID id)
+void MainSystem::injectMousePressed(const OIS::MouseEvent& e, OIS::MouseButtonID id)
 {
 	Graphic::GraphicSystem::instance()->injectMousePressed(e, id);
 	States::StatesSystem::instance()->injectMousePressed(e, id);
 }
 
-void MainSystem::mouseReleased(const OIS::MouseEvent& e, OIS::MouseButtonID id)
+void MainSystem::injectMouseReleased(const OIS::MouseEvent& e, OIS::MouseButtonID id)
 {
 	Graphic::GraphicSystem::instance()->injectMouseReleased(e, id);
 	States::StatesSystem::instance()->injectMouseReleased(e, id);
 }
 
-void MainSystem::keyPressed(const OIS::KeyEvent& e)
+void MainSystem::injectKeyPressed(const OIS::KeyEvent& e)
 {
 	Graphic::GraphicSystem::instance()->injectKeyPressed(e);
 	States::StatesSystem::instance()->injectKeyPressed(e);
 }
 
-void MainSystem::keyReleased(const OIS::KeyEvent& e)
+void MainSystem::injectKeyReleased(const OIS::KeyEvent& e)
 {
 	Graphic::GraphicSystem::instance()->injectKeyReleased(e);
 	States::StatesSystem::instance()->injectKeyReleased(e);
-}
-
-void MainSystem::stateStartLoad()
-{
-	mStateLoad = true;
-}
-
-void MainSystem::stateEndLoad()
-{
-	mStateLoad = false;
 }

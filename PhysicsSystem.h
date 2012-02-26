@@ -34,7 +34,7 @@ namespace JGC
 			PhysicsSystem(ISystemsListener *xMainListener);
 			~PhysicsSystem();
 			void init(Ogre::SceneManager *xSceneManager);
-			void needUpdate(const Ogre::FrameEvent& evt);
+			void injectUpdate(const float& xTimeSinceLastFrame);
 			void setDebugDrawer(btIDebugDraw* xBtIDebugDraw);
 
 		public:

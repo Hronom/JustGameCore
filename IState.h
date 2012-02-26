@@ -7,23 +7,26 @@
 
 namespace JGC
 {
-	class IState
+	namespace States
 	{
-	public:
-		IState() {};
-		virtual ~IState() {};
+		class IState
+		{
+		public:
+			IState() {};
+			virtual ~IState() {};
 
-		virtual void prepareState() = 0;
-		virtual void enter() = 0;
-		virtual void exit() = 0;
+			virtual void prepareState() = 0;
+			virtual void enter() = 0;
+			virtual void exit() = 0;
 
-		virtual void needUpdate(const Ogre::FrameEvent& evt) {};
-		virtual	void mouseMoved(const OIS::MouseEvent& e) {};
-		virtual void mousePressed(const OIS::MouseEvent& e, OIS::MouseButtonID id) {};
-		virtual void mouseReleased(const OIS::MouseEvent& e, OIS::MouseButtonID id) {};
-		virtual	void keyPressed(const OIS::KeyEvent& e) {};
-		virtual void keyReleased(const OIS::KeyEvent& e) {};
-	};
+			virtual void injectUpdate(const float& xTimeSinceLastFrame) {};
+			virtual	void injectMouseMoved(const OIS::MouseEvent& e) {};
+			virtual void injectMousePressed(const OIS::MouseEvent& e, OIS::MouseButtonID id) {};
+			virtual void injectMouseReleased(const OIS::MouseEvent& e, OIS::MouseButtonID id) {};
+			virtual	void injectKeyPressed(const OIS::KeyEvent& e) {};
+			virtual void injectKeyReleased(const OIS::KeyEvent& e) {};
+		};
+	}
 }
 
 #endif

@@ -42,7 +42,7 @@ InputSystem::~InputSystem()
 void InputSystem::init(unsigned int xWinHandle, unsigned int xWinWidth, unsigned int xWinHeight)
 {
 	//---------------------------------------------------- 
-	// 7 Добавление OIS для перехвата событий 
+	// Добавление OIS для перехвата событий 
 	//----------------------------------------------------
 
 	//Настройка менеджера, клавы и мыши для захвата
@@ -59,7 +59,7 @@ void InputSystem::init(unsigned int xWinHandle, unsigned int xWinWidth, unsigned
 	mKeyboard->setEventCallback(this);
 }
 
-void InputSystem::needUpdate()
+void InputSystem::injectUpdate()
 {
 	mMouse->capture();
 	mKeyboard->capture();
@@ -74,35 +74,30 @@ void InputSystem::injectWindowResized(unsigned int xNewWidth, unsigned int xNewH
 
 bool InputSystem::mouseMoved(const OIS::MouseEvent& e)
 {
-	mMainListener->mouseMoved(e);
-
+	mMainListener->injectMouseMoved(e);
 	return true; 
 }
 
 bool InputSystem::mousePressed(const OIS::MouseEvent& e, OIS::MouseButtonID id)
 { 
-	mMainListener->mousePressed(e, id);
-
+	mMainListener->injectMousePressed(e, id);
 	return true; 
 }
 
 bool InputSystem::mouseReleased(const OIS::MouseEvent& e, OIS::MouseButtonID id)
 { 
-	mMainListener->mouseReleased(e, id);
-
+	mMainListener->injectMouseReleased(e, id);
 	return true; 
 }
 
 bool InputSystem::keyPressed(const OIS::KeyEvent& e)
 { 
-	mMainListener->keyPressed(e);
-
+	mMainListener->injectKeyPressed(e);
 	return true;
 }
 
 bool InputSystem::keyReleased(const OIS::KeyEvent& e)
 { 
-	mMainListener->keyReleased(e);
-
+	mMainListener->injectKeyReleased(e);
 	return true; 
 }

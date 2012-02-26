@@ -17,10 +17,6 @@ namespace JGC
 		PhysicsDebugDrawer *mPhysicsDebugDrawer;
 
 		bool mNeedShutdown;
-		bool mStateLoad;
-
-		std::string mCurrentStateName;
-		bool mShowLoadScreen;
 
 	private:
 		MainSystem(Ogre::String xOgreCfg, Ogre::String xPluginsCfg, Ogre::String xResourcesCfg, Ogre::String xOgreLogFile, Ogre::String xMyGUILogFile);
@@ -39,7 +35,6 @@ namespace JGC
 		//normal
 		void run();
 
-		void needSwitchToState(std::string xStateName, bool xShowLoadScreen = false);
 		void stateLoadProgress(int xProgressValue, std::string xText);
 		void needShutdown();
 
@@ -47,17 +42,15 @@ namespace JGC
 		//-------------------------------------------------------------
 		// ISystemsListener
 		//-------------------------------------------------------------
-		virtual bool frameStarted(const Ogre::FrameEvent& evt);
-		virtual bool frameEnded(const Ogre::FrameEvent& evt);
+		virtual bool frameStarted(const float& xTimeSinceLastFrame);
+		virtual bool frameEnded(const float& xTimeSinceLastFrame);
 		virtual void windowResized(unsigned int xNewWidth, unsigned int xNewHeight);
 		virtual void windowClosed();
-		virtual	void mouseMoved(const OIS::MouseEvent& e);
-		virtual void mousePressed(const OIS::MouseEvent& e, OIS::MouseButtonID id);
-		virtual void mouseReleased(const OIS::MouseEvent& e, OIS::MouseButtonID id);
-		virtual	void keyPressed(const OIS::KeyEvent& e);
-		virtual void keyReleased(const OIS::KeyEvent& e);
-		virtual void stateStartLoad();
-		virtual void stateEndLoad();
+		virtual	void injectMouseMoved(const OIS::MouseEvent& e);
+		virtual void injectMousePressed(const OIS::MouseEvent& e, OIS::MouseButtonID id);
+		virtual void injectMouseReleased(const OIS::MouseEvent& e, OIS::MouseButtonID id);
+		virtual	void injectKeyPressed(const OIS::KeyEvent& e);
+		virtual void injectKeyReleased(const OIS::KeyEvent& e);
 	};
 }
 

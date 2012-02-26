@@ -22,6 +22,11 @@ namespace JGC
 			std::map<std::string, IState*> mStatesMap;
 
 			std::string mCurrentStateName;
+			std::string mNeedStateName;
+
+			bool mShowLoadScreen;
+			bool mStateSwitching;
+			bool mBeginStateSwitch;
 
 		public:
 			static bool initialize(ISystemsListener *xMainListener);
@@ -32,16 +37,18 @@ namespace JGC
 			StatesSystem(ISystemsListener *xMainListener);
 			~StatesSystem();
 			bool init();
-			virtual void needUpdate(const Ogre::FrameEvent& evt);
+			virtual void injectUpdate(const float& xTimeSinceLastFrame);
 			virtual	void injectMouseMoved(const OIS::MouseEvent& e);
 			virtual void injectMousePressed(const OIS::MouseEvent& e, OIS::MouseButtonID id);
 			virtual void injectMouseReleased(const OIS::MouseEvent& e, OIS::MouseButtonID id);
 			virtual	void injectKeyPressed(const OIS::KeyEvent& e);
 			virtual void injectKeyReleased(const OIS::KeyEvent& e);
 			virtual void injectStateLoadProgress(int xProgressValue, std::string xText);
-			void switchToState(std::string xStateName, bool xShowLoadScreen = false);
+			void beginStateSwitch();
+			bool inline isStateSwitching() {return mStateSwitching;}
 
 		public:
+			void needSwitchToState(std::string xStateName, bool xShowLoadScreen = false);
 			void setLoadState(ILoadScreen *xLoadState);
 			void addNormalState(std::string xStateName, IState *xState);
 			std::string getCurrentStateName();
