@@ -3,20 +3,17 @@
 
 namespace JGC
 {
-	namespace States
+	class ILoadScreen
 	{
-		class ILoadScreen
-		{
-		public:
-			ILoadScreen() {};
-			virtual ~ILoadScreen() {};
+	public:
+		ILoadScreen() {};
+		virtual ~ILoadScreen() {};
 
-			virtual void show() = 0;
-			virtual void hide() = 0;
+		virtual void show() = 0;
+		virtual void hide() = 0;
 
-			virtual void setProgress(int xProgressValue, std::string xText) = 0;
-		};
-	}
+		virtual void setProgress(int xProgressValue, std::string xText) = 0;
+	};
 }
 
 #endif

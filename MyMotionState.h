@@ -6,22 +6,19 @@
 
 namespace JGC
 {
-	namespace Physics
+	class MyMotionState : public btMotionState
 	{
-		class MyMotionState : public btMotionState
-		{
-		protected:
-			Ogre::SceneNode *mSceneNode;
-			btTransform mPos;
+	protected:
+		Ogre::SceneNode *mSceneNode;
+		btTransform mPos;
 
-		public:
-			MyMotionState(const btTransform &xInitialpos, Ogre::SceneNode *xNode);
-			virtual ~MyMotionState();
-			void setNode(Ogre::SceneNode *xNode);
-			virtual void getWorldTransform(btTransform &xWorldTrans) const;
-			virtual void setWorldTransform(const btTransform &xWorldTrans);
-		};
-	}
+	public:
+		MyMotionState(const btTransform &xInitialpos, Ogre::SceneNode *xNode);
+		virtual ~MyMotionState();
+		void setNode(Ogre::SceneNode *xNode);
+		virtual void getWorldTransform(btTransform &xWorldTrans) const;
+		virtual void setWorldTransform(const btTransform &xWorldTrans);
+	};
 }
 
 #endif

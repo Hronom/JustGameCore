@@ -6,38 +6,39 @@
 
 namespace JGC
 {
-	class MainSystem;
 	class PhysicsDebugDrawer: public btIDebugDraw, public Ogre::FrameListener
 	{
-		friend class MainSystem;
 	private:
 		bool mFrameStarted;
 		struct ContactPoint
 		{
-			Ogre::Vector3 from;
-			Ogre::Vector3 to;
-			Ogre::ColourValue color;
-			size_t dieTime;
+			Ogre::Vector3 xFrom;
+			Ogre::Vector3 xTo;
+			Ogre::ColourValue xColor;
+			size_t xDieTime;
 		};
+
 		DebugDrawModes mDebugModes;
 		Ogre::ManualObject *mLines;
 		Ogre::ManualObject *mTriangles;
 		std::vector<ContactPoint> *mContactPoints;
 		std::vector<ContactPoint> mContactPoints1;
 		std::vector<ContactPoint> mContactPoints2;
+
 	public:
-		PhysicsDebugDrawer(Ogre::SceneManager *scm);
+		PhysicsDebugDrawer(Ogre::SceneManager *xSceneManager);
 		~PhysicsDebugDrawer();
-		virtual void drawLine(const btVector3 &from, const btVector3 &to, const btVector3 &color);
-		virtual void drawTriangle(const btVector3 &v0, const btVector3 &v1, const btVector3 &v2, const btVector3 &color, btScalar);
-		virtual void drawContactPoint(const btVector3 &PointOnB, const btVector3 &normalOnB, btScalar distance, int lifeTime, const btVector3 &color);
-		virtual void reportErrorWarning(const char *warningString);
-		virtual void draw3dText(const btVector3 &location, const char *textString);
-		virtual void setDebugMode(int debugMode);
+		virtual void drawLine(const btVector3 &xFrom, const btVector3 &xTo, const btVector3 &xColor);
+		virtual void drawTriangle(const btVector3 &xDot1, const btVector3 &xDot2, const btVector3 &xDot3, const btVector3 &xColor, btScalar xAlpha);
+		virtual void drawContactPoint(const btVector3 &xPointOnB, const btVector3 &xNormalOnB, btScalar xDistance, int xLifeTime, const btVector3 &xColor);
+		virtual void reportErrorWarning(const char *xWarningString);
+		virtual void draw3dText(const btVector3 &xLocation, const char *xTextString);
+		virtual void setDebugMode(int xDebugMode);
 		virtual int  getDebugMode() const;
-	protected:
-		bool frameStarted(const Ogre::FrameEvent& evt);
-		bool frameEnded(const Ogre::FrameEvent& evt);
+
+	public:
+		bool frameStarted(const float& xTimeSinceLastFrame);
+		bool frameEnded(const float& xTimeSinceLastFrame);
 	};
 }
 

@@ -8,39 +8,35 @@
 
 namespace JGC
 {
-	class MainSystem;
-	namespace Physics
+	class PhysicsSystem
 	{
-		class PhysicsSystem
-		{
-			friend class MainSystem;
-		private:
-			static PhysicsSystem* mInstance;
+		friend class MainSystem;
+	private:
+		static PhysicsSystem* mInstance;
 
-			ISystemsListener *mMainListener;
+		ISystemsListener *mMainListener;
 
-			btBroadphaseInterface* mBroadphase;
-			btDefaultCollisionConfiguration* mCollisionConfiguration;
-			btCollisionDispatcher* mDispatcher;
-			btSequentialImpulseConstraintSolver* mSolver;
-			btDiscreteDynamicsWorld* mDynamicsWorld;
+		btBroadphaseInterface* mBroadphase;
+		btDefaultCollisionConfiguration* mCollisionConfiguration;
+		btCollisionDispatcher* mDispatcher;
+		btSequentialImpulseConstraintSolver* mSolver;
+		btDiscreteDynamicsWorld* mDynamicsWorld;
 
-		public:
-			static void initialize(ISystemsListener *xMainListener, Ogre::SceneManager *xSceneManager);
-			static void shutdown();
-			static PhysicsSystem* instance();
+	public:
+		static void initialize(ISystemsListener *xMainListener, Ogre::SceneManager *xSceneManager);
+		static void shutdown();
+		static PhysicsSystem* instance();
 
-		private: 
-			PhysicsSystem(ISystemsListener *xMainListener);
-			~PhysicsSystem();
-			void init(Ogre::SceneManager *xSceneManager);
-			void injectUpdate(const float& xTimeSinceLastFrame);
-			void setDebugDrawer(btIDebugDraw* xBtIDebugDraw);
+	private: 
+		PhysicsSystem(ISystemsListener *xMainListener);
+		~PhysicsSystem();
+		void init(Ogre::SceneManager *xSceneManager);
 
-		public:
-			btDiscreteDynamicsWorld* getDynamicsWorld();
-		};
-	}
+	public:
+		void injectUpdate(const float& xTimeSinceLastFrame);
+		void setDebugDrawer(btIDebugDraw* xBtIDebugDraw);
+		btDiscreteDynamicsWorld* getDynamicsWorld();
+	};
 }
 
 #endif

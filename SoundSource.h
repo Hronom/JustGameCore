@@ -11,33 +11,30 @@
 
 namespace JGC
 {
-	namespace Sound
+	class SoundSource
 	{
-		class SoundSource
-		{
-		private:
-			ALuint mSourceID;
-			bool mLooped;
-			bool mReady;
-			std::string mErrorMessage;
+	private:
+		ALuint mSourceID;
+		bool mLooped;
+		bool mReady;
+		std::string mErrorMessage;
 
-		public:
-			SoundSource();
-			virtual ~SoundSource();
+	public:
+		SoundSource();
+		virtual ~SoundSource();
 
-			void play();
-			void stop();
-			void move(float xNewX, float xNewY, float xNewZ);
-			bool isReady();
-			std::string getErrorMessage();
+		void play();
+		void stop();
+		void move(float xNewX, float xNewY, float xNewZ);
+		bool isReady();
+		std::string getErrorMessage();
 
-		private:
-			void init(ALuint xSourceID, bool xLooped);
-			void setError(std::string xErrorMessage, bool xReady);
+	private:
+		void init(ALuint xSourceID, bool xLooped);
+		void setError(std::string xErrorMessage, bool xReady);
 
-			friend class SoundSystem;
-		};
-	}
+		friend class SoundSystem;
+	};
 }
 
 #endif

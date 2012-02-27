@@ -7,17 +7,14 @@
 
 namespace JGC
 {
-	namespace Sound
+	class SoundListener
 	{
-		class SoundListener
-		{
-		public:
-			SoundListener(float xPosX, float xPosY, float xPosZ);
-			~SoundListener();
+	public:
+		SoundListener(float xPosX, float xPosY, float xPosZ);
+		~SoundListener();
 
-			void move(float xNewX, float xNewY, float xNewZ);
-		};
-	}
+		void move(float xNewX, float xNewY, float xNewZ);
+	};
 }
 
 #endif

@@ -1,140 +1,142 @@
 #include "PhysicsDebugDrawer.h"
 #include "Utils.h"
-using namespace JGC;
 
-PhysicsDebugDrawer::PhysicsDebugDrawer( Ogre::SceneManager *scm )
+namespace JGC
 {
-	mFrameStarted = false;
-	mContactPoints = &mContactPoints1;
-	mLines = new Ogre::ManualObject("physics lines");
-	mTriangles = new Ogre::ManualObject("physics triangles");
-	mLines->setDynamic(true);
-	mTriangles->setDynamic(true);
-	//mLines->estimateVertexCount( 100000 );
-	//mLines->estimateIndexCount( 0 );
-
-	scm->getRootSceneNode()->attachObject( mLines );
-	scm->getRootSceneNode()->attachObject( mTriangles );
-
-	static const char * matName = "OgreBulletCollisionsDebugDefault";
-	Ogre::MaterialPtr mtl = Ogre::MaterialManager::getSingleton().getDefaultSettings()->clone(matName);
-	mtl->setReceiveShadows(false);
-	mtl->setSceneBlending( Ogre::SBT_TRANSPARENT_ALPHA );
-	mtl->setDepthBias( 0.1, 0 );
-	Ogre::TextureUnitState * tu = mtl->getTechnique(0)->getPass(0)->createTextureUnitState();
-	tu->setColourOperationEx( Ogre::LBX_SOURCE1, Ogre::LBS_DIFFUSE );
-	mtl->getTechnique(0)->setLightingEnabled(true);
-	mtl->getTechnique(0)->setSelfIllumination( Ogre::ColourValue::White ); 
-
-	mLines->begin( matName, Ogre::RenderOperation::OT_LINE_LIST );
-	mLines->position( Ogre::Vector3::ZERO );
-	mLines->colour( Ogre::ColourValue::Blue );
-	mLines->position( Ogre::Vector3::ZERO );
-	mLines->colour( Ogre::ColourValue::Blue );
-
-	mTriangles->begin( matName, Ogre::RenderOperation::OT_TRIANGLE_LIST );
-	mTriangles->position(Ogre::Vector3::ZERO );
-	mTriangles->colour(Ogre::ColourValue::Blue );
-	mTriangles->position( Ogre::Vector3::ZERO );
-	mTriangles->colour( Ogre::ColourValue::Blue );
-	mTriangles->position( Ogre::Vector3::ZERO );
-	mTriangles->colour( Ogre::ColourValue::Blue );
-
-	mDebugModes = btIDebugDraw::DBG_DrawWireframe;
-	//Ogre::Root::getSingleton().addFrameListener(this);
-}
-
-PhysicsDebugDrawer::~PhysicsDebugDrawer()
-{
-	//Ogre::Root::getSingleton().removeFrameListener(this);
-	delete mLines;
-	delete mTriangles;
-}
-
-void PhysicsDebugDrawer::drawLine( const btVector3 &from, const btVector3 &to, const btVector3 &color )
-{
-	Ogre::ColourValue c( color.getX(), color.getY(), color.getZ() );  
-	c.saturate();
-	mLines->position( JGC::toOgreVector3(from) );
-	mLines->colour( c );
-	mLines->position( JGC::toOgreVector3(to) );
-	mLines->colour( c );
-}
-
-void PhysicsDebugDrawer::drawTriangle( const btVector3 &v0, const btVector3 &v1, const btVector3 &v2, const btVector3 &color, btScalar alpha )
-{
-	Ogre::ColourValue c( color.getX(), color.getY(), color.getZ(), alpha );  
-	c.saturate();
-	mTriangles->position( JGC::toOgreVector3(v0) );
-	mTriangles->colour( c );
-	mTriangles->position( JGC::toOgreVector3(v1) );
-	mTriangles->colour( c );
-	mTriangles->position( JGC::toOgreVector3(v2) );
-	mTriangles->colour( c );
-}
-
-void PhysicsDebugDrawer::drawContactPoint( const btVector3 &PointOnB, const btVector3 &normalOnB, btScalar distance, int lifeTime, const btVector3 &color )
-{
-	mContactPoints->resize( mContactPoints->size() + 1 );
-	ContactPoint p = mContactPoints->back();
-	p.from = JGC::toOgreVector3( PointOnB );
-	p.to = p.from + JGC::toOgreVector3( normalOnB ) * distance;
-	p.dieTime = Ogre::Root::getSingleton().getTimer()->getMilliseconds() + lifeTime;
-	p.color.r = color.x();
-	p.color.g = color.y();
-	p.color.b = color.z();
-}
-
-bool PhysicsDebugDrawer::frameStarted( const Ogre::FrameEvent& evt )
-{
-	mFrameStarted = true;
-	size_t xNow = Ogre::Root::getSingleton().getTimer()->getMilliseconds();
-	std::vector< ContactPoint > *newCP = mContactPoints == &mContactPoints1 ? &mContactPoints2 : &mContactPoints1;
-	for ( std::vector< ContactPoint >::iterator i = mContactPoints->begin(); i < mContactPoints->end(); i++ )
+	PhysicsDebugDrawer::PhysicsDebugDrawer(Ogre::SceneManager *xSceneManager)
 	{
-		ContactPoint &cp = *i;
-		mLines->position( cp.from );
-		mLines->colour( cp.color );
-		mLines->position( cp.to );
-		if ( xNow <= cp.dieTime  ) newCP->push_back( cp );
-	}
-	mContactPoints->clear();
-	mContactPoints = newCP;
-
-	mLines->end();
-	mTriangles->end();
-
-	return true;
-}
-
-bool PhysicsDebugDrawer::frameEnded( const Ogre::FrameEvent& evt )
-{
-	if(mFrameStarted == true)
-	{
-		mLines->beginUpdate(0);
-		mTriangles->beginUpdate(0);
 		mFrameStarted = false;
+		mContactPoints = &mContactPoints1;
+		mLines = new Ogre::ManualObject("physics lines");
+		mTriangles = new Ogre::ManualObject("physics triangles");
+		mLines->setDynamic(true);
+		mTriangles->setDynamic(true);
+		//mLines->estimateVertexCount( 100000 );
+		//mLines->estimateIndexCount( 0 );
+
+		xSceneManager->getRootSceneNode()->attachObject(mLines);
+		xSceneManager->getRootSceneNode()->attachObject(mTriangles);
+
+		static const char *xMatName = "OgreBulletCollisionsDebugDefault";
+		Ogre::MaterialPtr xMaterialPtr = Ogre::MaterialManager::getSingleton().getDefaultSettings()->clone(xMatName);
+		xMaterialPtr->setReceiveShadows(false);
+		xMaterialPtr->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
+		xMaterialPtr->setDepthBias(0.1, 0);
+		Ogre::TextureUnitState *xTUS = xMaterialPtr->getTechnique(0)->getPass(0)->createTextureUnitState();
+		xTUS->setColourOperationEx(Ogre::LBX_SOURCE1, Ogre::LBS_DIFFUSE);
+		xMaterialPtr->getTechnique(0)->setLightingEnabled(false);
+		//xMaterialPtr->getTechnique(0)->setSelfIllumination(Ogre::ColourValue::White); 
+
+		mLines->begin(xMatName, Ogre::RenderOperation::OT_LINE_LIST);
+		mLines->position(Ogre::Vector3::ZERO);
+		mLines->colour(Ogre::ColourValue::Blue);
+		mLines->position(Ogre::Vector3::ZERO);
+		mLines->colour(Ogre::ColourValue::Blue);
+
+		mTriangles->begin(xMatName, Ogre::RenderOperation::OT_TRIANGLE_LIST);
+		mTriangles->position(Ogre::Vector3::ZERO);
+		mTriangles->colour(Ogre::ColourValue::Blue);
+		mTriangles->position(Ogre::Vector3::ZERO);
+		mTriangles->colour(Ogre::ColourValue::Blue);
+		mTriangles->position(Ogre::Vector3::ZERO);
+		mTriangles->colour(Ogre::ColourValue::Blue);
+
+		mDebugModes = btIDebugDraw::DBG_DrawWireframe;
+		//Ogre::Root::getSingleton().addFrameListener(this);
 	}
 
-	return true;
-}
+	PhysicsDebugDrawer::~PhysicsDebugDrawer()
+	{
+		//Ogre::Root::getSingleton().removeFrameListener(this);
+		delete mLines;
+		delete mTriangles;
+	}
 
-void PhysicsDebugDrawer::reportErrorWarning( const char *warningString )
-{
-	Ogre::LogManager::getSingleton().getDefaultLog()->logMessage( warningString );
-}
+	void PhysicsDebugDrawer::drawLine(const btVector3 &xFrom, const btVector3 &xTo, const btVector3 &xColor)
+	{
+		Ogre::ColourValue xColour(xColor.getX(), xColor.getY(), xColor.getZ());  
+		xColour.saturate();
+		mLines->position(Utils::toOgreVector3(xFrom));
+		mLines->colour(xColour);
+		mLines->position(Utils::toOgreVector3(xTo));
+		mLines->colour(xColour);
+	}
 
-void PhysicsDebugDrawer::draw3dText( const btVector3 &location, const char *textString )
-{
+	void PhysicsDebugDrawer::drawTriangle(const btVector3 &xDot1, const btVector3 &xDot2, const btVector3 &xDot3, const btVector3 &xColor, btScalar xAlpha)
+	{
+		Ogre::ColourValue xColour(xColor.getX(), xColor.getY(), xColor.getZ(), xAlpha);  
+		xColour.saturate();
+		mTriangles->position(Utils::toOgreVector3(xDot1));
+		mTriangles->colour(xColour);
+		mTriangles->position( Utils::toOgreVector3(xDot2));
+		mTriangles->colour(xColour);
+		mTriangles->position(Utils::toOgreVector3(xDot3));
+		mTriangles->colour(xColour);
+	}
 
-}
+	void PhysicsDebugDrawer::drawContactPoint(const btVector3 &xPointOnB, const btVector3 &xNormalOnB, btScalar xDistance, int xLifeTime, const btVector3 &xColor)
+	{
+		mContactPoints->resize(mContactPoints->size() + 1);
+		ContactPoint p = mContactPoints->back();
+		p.xFrom = Utils::toOgreVector3(xPointOnB);
+		p.xTo = p.xFrom + Utils::toOgreVector3(xNormalOnB) * xDistance;
+		p.xDieTime = Ogre::Root::getSingleton().getTimer()->getMilliseconds() + xLifeTime;
+		p.xColor.r = xColor.x();
+		p.xColor.g = xColor.y();
+		p.xColor.b = xColor.z();
+	}
 
-void PhysicsDebugDrawer::setDebugMode( int debugMode )
-{
-	mDebugModes = (DebugDrawModes) debugMode;
-}
+	bool PhysicsDebugDrawer::frameStarted(const float& xTimeSinceLastFrame)
+	{
+		mFrameStarted = true;
+		size_t xNow = Ogre::Root::getSingleton().getTimer()->getMilliseconds();
+		std::vector< ContactPoint > *newCP = mContactPoints == &mContactPoints1 ? &mContactPoints2 : &mContactPoints1;
+		for (std::vector< ContactPoint >::iterator i = mContactPoints->begin(); i < mContactPoints->end(); i++)
+		{
+			ContactPoint &xContactPoint = *i;
+			mLines->position(xContactPoint.xFrom);
+			mLines->colour(xContactPoint.xColor);
+			mLines->position(xContactPoint.xTo);
+			if (xNow <= xContactPoint.xDieTime) newCP->push_back(xContactPoint);
+		}
+		mContactPoints->clear();
+		mContactPoints = newCP;
 
-int PhysicsDebugDrawer::getDebugMode() const
-{
-	return mDebugModes;
+		mLines->end();
+		mTriangles->end();
+
+		return true;
+	}
+
+	bool PhysicsDebugDrawer::frameEnded(const float& xTimeSinceLastFrame)
+	{
+		if(mFrameStarted == true)
+		{
+			mLines->beginUpdate(0);
+			mTriangles->beginUpdate(0);
+			mFrameStarted = false;
+		}
+
+		return true;
+	}
+
+	void PhysicsDebugDrawer::reportErrorWarning(const char *xWarningString)
+	{
+		Ogre::LogManager::getSingleton().getDefaultLog()->logMessage(xWarningString);
+	}
+
+	void PhysicsDebugDrawer::draw3dText(const btVector3 &xLocation, const char *xTextString)
+	{
+
+	}
+
+	void PhysicsDebugDrawer::setDebugMode(int xDebugMode)
+	{
+		mDebugModes = (DebugDrawModes) xDebugMode;
+	}
+
+	int PhysicsDebugDrawer::getDebugMode() const
+	{
+		return mDebugModes;
+	}
 }

@@ -19,8 +19,30 @@
     <Filter Include="Systems\StatesSystem">
       <UniqueIdentifier>{d4446898-3631-4660-be3f-afe6af4680d9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Interfaces">
+      <UniqueIdentifier>{c7494a59-3e6f-4d8d-a4ba-a1d95686ed60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{518c5530-ac19-4066-bbc0-6a4848a632a9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="SoundSource.cpp">
+      <Filter>Systems\SoundSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundListener.cpp">
+      <Filter>Systems\SoundSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="MyMotionState.cpp">
+      <Filter>Systems\PhysicsSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsDebugDrawer.cpp" />
+    <ClCompile Include="MainSystem.cpp">
+      <Filter>Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="StatesSystem.cpp">
+      <Filter>Systems\StatesSystem</Filter>
+    </ClCompile>
     <ClCompile Include="GraphicSystem.cpp">
       <Filter>Systems\GraphicSystem</Filter>
     </ClCompile>
@@ -33,25 +55,36 @@
     <ClCompile Include="SoundSystem.cpp">
       <Filter>Systems\SoundSystem</Filter>
     </ClCompile>
-    <ClCompile Include="StatesSystem.cpp">
-      <Filter>Systems\StatesSystem</Filter>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="MainSystem.cpp">
-      <Filter>Systems</Filter>
-    </ClCompile>
-    <ClCompile Include="SoundSource.cpp">
-      <Filter>Systems\SoundSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="SoundListener.cpp">
-      <Filter>Systems\SoundSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="MyMotionState.cpp">
-      <Filter>Systems\PhysicsSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="Utils.cpp" />
-    <ClCompile Include="PhysicsDebugDrawer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="SoundSource.h">
+      <Filter>Systems\SoundSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundListener.h">
+      <Filter>Systems\SoundSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="MyMotionState.h">
+      <Filter>Systems\PhysicsSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsDebugDrawer.h" />
+    <ClInclude Include="MainSystem.h">
+      <Filter>Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="ISystemsListener.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IState.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="ILoadScreen.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="StatesSystem.h">
+      <Filter>Systems\StatesSystem</Filter>
+    </ClInclude>
     <ClInclude Include="GraphicSystem.h">
       <Filter>Systems\GraphicSystem</Filter>
     </ClInclude>
@@ -64,29 +97,8 @@
     <ClInclude Include="SoundSystem.h">
       <Filter>Systems\SoundSystem</Filter>
     </ClInclude>
-    <ClInclude Include="StatesSystem.h">
-      <Filter>Systems\StatesSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="MainSystem.h">
-      <Filter>Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="SoundSource.h">
-      <Filter>Systems\SoundSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="SoundListener.h">
-      <Filter>Systems\SoundSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="MyMotionState.h">
-      <Filter>Systems\PhysicsSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils.h" />
-    <ClInclude Include="PhysicsDebugDrawer.h" />
-    <ClInclude Include="IState.h">
-      <Filter>Systems\StatesSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="ISystemsListener.h" />
-    <ClInclude Include="ILoadScreen.h">
-      <Filter>Systems\StatesSystem</Filter>
+    <ClInclude Include="Utils.h">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -4,133 +4,128 @@
 #include "SoundSystem.h"
 #include "InputSystem.h"
 #include "StatesSystem.h"
-using namespace JGC;
+#include "PhysicsDebugDrawer.h"
 
-MainSystem* MainSystem::mInstance = 0;
-
-MainSystem::MainSystem(Ogre::String xOgreCfg, Ogre::String xPluginsCfg, Ogre::String xResourcesCfg, Ogre::String xOgreLogFile, Ogre::String xMyGUILogFile)
+namespace JGC
 {
-	mPhysicsDebugDrawer = 0;
-	mNeedShutdown = false;
+	MainSystem* MainSystem::mInstance = 0;
 
-	Graphic::GraphicSystem::initialize(this, xOgreCfg, xPluginsCfg, xResourcesCfg, xOgreLogFile, xMyGUILogFile);
-	Physics::PhysicsSystem::initialize(this, Graphic::GraphicSystem::instance()->getSceneManager());
-	Sound::SoundSystem::initialize(this);
-	Input::InputSystem::initialize(this, 
-		Graphic::GraphicSystem::instance()->getWinHandle(),
-		Graphic::GraphicSystem::instance()->getWinWidth(), 
-		Graphic::GraphicSystem::instance()->getWinHeight());
-	States::StatesSystem::initialize(this);
-
-	/*mPhysicsDebugDrawer = new PhysicsDebugDrawer(Graphic::GraphicSystem::instance()->getSceneManager());
-	mPhysicsDebugDrawer->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
-	Physics::PhysicsSystem::instance()->setDebugDrawer(mPhysicsDebugDrawer);*/
-}
-
-MainSystem::~MainSystem()
-{
-	States::StatesSystem::shutdown();
-	Input::InputSystem::shutdown();
-	Sound::SoundSystem::shutdown();
-	Physics::PhysicsSystem::shutdown();
-	Graphic::GraphicSystem::shutdown();
-}
-
-void MainSystem::initialize(Ogre::String xOgreCfg, Ogre::String xPluginsCfg, Ogre::String xResourcesCfg, Ogre::String xOgreLogFile, Ogre::String xMyGUILogFile)
-{
-	mInstance = new MainSystem(xOgreCfg, xPluginsCfg, xResourcesCfg, xOgreLogFile, xMyGUILogFile);
-}
-
-void MainSystem::shutdown()
-{
-	delete mInstance;
-	mInstance = 0;
-}
-
-MainSystem* MainSystem::instance()
-{
-	return mInstance;
-}
-
-void MainSystem::run()
-{
-	Graphic::GraphicSystem::instance()->start();
-}
-
-void MainSystem::stateLoadProgress(int xProgressValue, std::string xText)
-{
-	States::StatesSystem::instance()->injectStateLoadProgress(xProgressValue, xText);
-	Graphic::GraphicSystem::instance()->needSingleUpdate();
-}
-
-void MainSystem::needShutdown()
-{
-	mNeedShutdown = true;
-}
-
-//-------------------------------------------------------------
-// ISystemsListener
-//-------------------------------------------------------------
-bool MainSystem::frameStarted(const float& xTimeSinceLastFrame)
-{
-	if(States::StatesSystem::instance()->isStateSwitching() == true)
+	void MainSystem::initialize(Ogre::String xOgreCfg, Ogre::String xPluginsCfg, Ogre::String xResourcesCfg, Ogre::String xOgreLogFile, Ogre::String xMyGUILogFile)
 	{
-		States::StatesSystem::instance()->injectUpdate(xTimeSinceLastFrame);
+		mInstance = new MainSystem(xOgreCfg, xPluginsCfg, xResourcesCfg, xOgreLogFile, xMyGUILogFile);
 	}
-	else
+
+	void MainSystem::shutdown()
 	{
-		Physics::PhysicsSystem::instance()->injectUpdate(xTimeSinceLastFrame);
+		delete mInstance;
+		mInstance = 0;
+	}
+
+	MainSystem* MainSystem::instance()
+	{
+		return mInstance;
+	}
+
+	void MainSystem::run()
+	{
+		while(mNeedShutdown == false)
+		{
+			InputSystem::instance()->injectUpdate();
+			PhysicsSystem::instance()->injectUpdate(mTimeSinceLastFrame);
+			StatesSystem::instance()->injectUpdate(mTimeSinceLastFrame);			
+			GraphicSystem::instance()->injectUpdate();
+
+			StatesSystem::instance()->switchStateIfNeed();
+		}
+	}
+
+	void MainSystem::needShutdown()
+	{
+		mNeedShutdown = true;
+	}
+
+	MainSystem::MainSystem(Ogre::String xOgreCfg, Ogre::String xPluginsCfg, Ogre::String xResourcesCfg, Ogre::String xOgreLogFile, Ogre::String xMyGUILogFile)
+	{
+		mPhysicsDebugDrawer = 0;
+		mTimeSinceLastFrame = 0;
+		mNeedShutdown = false;
+
+		GraphicSystem::initialize(this, xOgreCfg, xPluginsCfg, xResourcesCfg, xOgreLogFile, xMyGUILogFile);
+		PhysicsSystem::initialize(this, GraphicSystem::instance()->getSceneManager());
+		SoundSystem::initialize(this);
+		InputSystem::initialize(this, 
+			GraphicSystem::instance()->getWinHandle(),
+			GraphicSystem::instance()->getWinWidth(), 
+			GraphicSystem::instance()->getWinHeight());
+		StatesSystem::initialize(this);
+
+		/*mPhysicsDebugDrawer = new PhysicsDebugDrawer(GraphicSystem::instance()->getSceneManager());
+		PhysicsSystem::instance()->setDebugDrawer(mPhysicsDebugDrawer);*/
+	}
+
+	MainSystem::~MainSystem()
+	{
+		//delete mPhysicsDebugDrawer;
+		StatesSystem::shutdown();
+		InputSystem::shutdown();
+		SoundSystem::shutdown();
+		PhysicsSystem::shutdown();
+		GraphicSystem::shutdown();
+	}
+
+	//-------------------------------------------------------------
+	// ISystemsListener
+	//-------------------------------------------------------------
+	bool MainSystem::frameStarted(const float& xTimeSinceLastFrame)
+	{
 		//mPhysicsDebugDrawer->frameStarted(xTimeSinceLastFrame);
-		Input::InputSystem::instance()->injectUpdate();
-		States::StatesSystem::instance()->injectUpdate(xTimeSinceLastFrame);
+		return true;
 	}
 
-	return !mNeedShutdown;
-}
+	bool MainSystem::frameEnded(const float& xTimeSinceLastFrame)
+	{
+		mTimeSinceLastFrame = xTimeSinceLastFrame;
+		//mPhysicsDebugDrawer->frameEnded(xTimeSinceLastFrame);
+		return true;
+	}
 
-bool MainSystem::frameEnded(const float& xTimeSinceLastFrame)
-{
-	//mPhysicsDebugDrawer->frameEnded(xTimeSinceLastFrame);
+	void MainSystem::windowResized(unsigned int xNewWidth, unsigned int xNewHeight)
+	{
+		InputSystem::instance()->injectWindowResized(xNewWidth, xNewHeight);
+	}
 
-	return !mNeedShutdown;
-}
+	void MainSystem::windowClosed()
+	{
+		mNeedShutdown = true;
+	}
 
-void MainSystem::windowResized(unsigned int xNewWidth, unsigned int xNewHeight)
-{
-	Input::InputSystem::instance()->injectWindowResized(xNewWidth, xNewHeight);
-}
+	void MainSystem::injectMouseMoved(const OIS::MouseEvent& e)
+	{
+		GraphicSystem::instance()->injectMouseMoved(e);
+		StatesSystem::instance()->injectMouseMoved(e);
+	}
 
-void MainSystem::windowClosed()
-{
-	mNeedShutdown = true;
-}
+	void MainSystem::injectMousePressed(const OIS::MouseEvent& e, OIS::MouseButtonID id)
+	{
+		GraphicSystem::instance()->injectMousePressed(e, id);
+		StatesSystem::instance()->injectMousePressed(e, id);
+	}
 
-void MainSystem::injectMouseMoved(const OIS::MouseEvent& e)
-{
-	Graphic::GraphicSystem::instance()->injectMouseMoved(e);
-	States::StatesSystem::instance()->injectMouseMoved(e);
-}
+	void MainSystem::injectMouseReleased(const OIS::MouseEvent& e, OIS::MouseButtonID id)
+	{
+		GraphicSystem::instance()->injectMouseReleased(e, id);
+		StatesSystem::instance()->injectMouseReleased(e, id);
+	}
 
-void MainSystem::injectMousePressed(const OIS::MouseEvent& e, OIS::MouseButtonID id)
-{
-	Graphic::GraphicSystem::instance()->injectMousePressed(e, id);
-	States::StatesSystem::instance()->injectMousePressed(e, id);
-}
+	void MainSystem::injectKeyPressed(const OIS::KeyEvent& e)
+	{
+		GraphicSystem::instance()->injectKeyPressed(e);
+		StatesSystem::instance()->injectKeyPressed(e);
+	}
 
-void MainSystem::injectMouseReleased(const OIS::MouseEvent& e, OIS::MouseButtonID id)
-{
-	Graphic::GraphicSystem::instance()->injectMouseReleased(e, id);
-	States::StatesSystem::instance()->injectMouseReleased(e, id);
-}
-
-void MainSystem::injectKeyPressed(const OIS::KeyEvent& e)
-{
-	Graphic::GraphicSystem::instance()->injectKeyPressed(e);
-	States::StatesSystem::instance()->injectKeyPressed(e);
-}
-
-void MainSystem::injectKeyReleased(const OIS::KeyEvent& e)
-{
-	Graphic::GraphicSystem::instance()->injectKeyReleased(e);
-	States::StatesSystem::instance()->injectKeyReleased(e);
+	void MainSystem::injectKeyReleased(const OIS::KeyEvent& e)
+	{
+		GraphicSystem::instance()->injectKeyReleased(e);
+		StatesSystem::instance()->injectKeyReleased(e);
+	}
 }

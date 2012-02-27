@@ -1,69 +1,71 @@
 #include "PhysicsSystem.h"
-using namespace JGC;
-using namespace JGC::Physics;
 
-PhysicsSystem* PhysicsSystem::mInstance = 0;
 
-void PhysicsSystem::initialize(ISystemsListener *xMainListener, Ogre::SceneManager *xSceneManager)
+namespace JGC
 {
-	mInstance = new PhysicsSystem(xMainListener);
-	mInstance->init(xSceneManager);
-}
+	PhysicsSystem* PhysicsSystem::mInstance = 0;
 
-void PhysicsSystem::shutdown()
-{
-	delete mInstance;
-	mInstance = 0;
-}
+	void PhysicsSystem::initialize(ISystemsListener *xMainListener, Ogre::SceneManager *xSceneManager)
+	{
+		mInstance = new PhysicsSystem(xMainListener);
+		mInstance->init(xSceneManager);
+	}
 
-PhysicsSystem* PhysicsSystem::instance()
-{
-	return mInstance;
-}
+	void PhysicsSystem::shutdown()
+	{
+		delete mInstance;
+		mInstance = 0;
+	}
 
-PhysicsSystem::PhysicsSystem(ISystemsListener *xMainListener)
-{
-	mMainListener = xMainListener;
-}
+	PhysicsSystem* PhysicsSystem::instance()
+	{
+		return mInstance;
+	}
 
-PhysicsSystem::~PhysicsSystem()
-{
-	delete mDynamicsWorld;
-    delete mSolver;
-    delete mDispatcher;
-    delete mCollisionConfiguration;
-    delete mBroadphase;
-}
+	PhysicsSystem::PhysicsSystem(ISystemsListener *xMainListener)
+	{
+		mMainListener = xMainListener;
+	}
 
-void PhysicsSystem::init(Ogre::SceneManager *xSceneManager)
-{
-	// Build the broadphase
-	mBroadphase = new btDbvtBroadphase();
+	PhysicsSystem::~PhysicsSystem()
+	{
+		delete mDynamicsWorld;
+		delete mSolver;
+		delete mDispatcher;
+		delete mCollisionConfiguration;
+		delete mBroadphase;
+	}
 
-	// Set up the collision configuration and dispatcher
-	mCollisionConfiguration = new btDefaultCollisionConfiguration();
-	mDispatcher = new btCollisionDispatcher(mCollisionConfiguration);
+	void PhysicsSystem::init(Ogre::SceneManager *xSceneManager)
+	{
+		// Build the broadphase
+		mBroadphase = new btDbvtBroadphase();
 
-	// The actual physics solver
-	mSolver = new btSequentialImpulseConstraintSolver;
+		// Set up the collision configuration and dispatcher
+		mCollisionConfiguration = new btDefaultCollisionConfiguration();
+		mDispatcher = new btCollisionDispatcher(mCollisionConfiguration);
 
-	// The world.
-	mDynamicsWorld = new btDiscreteDynamicsWorld(mDispatcher, mBroadphase, mSolver, mCollisionConfiguration);
-	mDynamicsWorld->setGravity(btVector3(0,0,0));
-}
+		// The actual physics solver
+		mSolver = new btSequentialImpulseConstraintSolver;
 
-void PhysicsSystem::injectUpdate(const float& xTimeSinceLastFrame)
-{
-	mDynamicsWorld->stepSimulation(xTimeSinceLastFrame, 10);	// update Bullet Physics animation
-	mDynamicsWorld->debugDrawWorld();
-}
+		// The world.
+		mDynamicsWorld = new btDiscreteDynamicsWorld(mDispatcher, mBroadphase, mSolver, mCollisionConfiguration);
+		mDynamicsWorld->setGravity(btVector3(0,0,0));
+	}
 
-void PhysicsSystem::setDebugDrawer(btIDebugDraw* xBtIDebugDraw)
-{
-	mDynamicsWorld->setDebugDrawer(xBtIDebugDraw);
-}
+	void PhysicsSystem::injectUpdate(const float& xTimeSinceLastFrame)
+	{
+		mDynamicsWorld->stepSimulation(xTimeSinceLastFrame, 10);	// update Bullet Physics animation
+		mDynamicsWorld->debugDrawWorld();
+	}
 
-btDiscreteDynamicsWorld* PhysicsSystem::getDynamicsWorld()
-{
-	return mDynamicsWorld;
+	void PhysicsSystem::setDebugDrawer(btIDebugDraw* xBtIDebugDraw)
+	{
+		mDynamicsWorld->setDebugDrawer(xBtIDebugDraw);
+	}
+
+	btDiscreteDynamicsWorld* PhysicsSystem::getDynamicsWorld()
+	{
+		return mDynamicsWorld;
+	}
 }

@@ -5,10 +5,11 @@
 
 #include "ISystemsListener.h"
 #include "IState.h"
-#include "PhysicsDebugDrawer.h"
 
 namespace JGC
 {
+	class PhysicsDebugDrawer;
+
 	class MainSystem : public ISystemsListener
 	{
 	private:
@@ -16,27 +17,28 @@ namespace JGC
 
 		PhysicsDebugDrawer *mPhysicsDebugDrawer;
 
+		float mTimeSinceLastFrame;
+
 		bool mNeedShutdown;
 
-	private:
-		MainSystem(Ogre::String xOgreCfg, Ogre::String xPluginsCfg, Ogre::String xResourcesCfg, Ogre::String xOgreLogFile, Ogre::String xMyGUILogFile);
-		~MainSystem();
-
 	public:
-		//singleton
+		/* initialize system */
 		static void initialize(Ogre::String xOgreCfg = "Ogre.cfg",
 			Ogre::String xPluginsCfg = "Plugins.cfg",
 			Ogre::String xResourcesCfg = "Resources.cfg",
 			Ogre::String xOgreLogFile = "Ogre.log",
 			Ogre::String xMyGUILogFile = "MyGUI.log");
+		/* shutdown system */
 		static void shutdown();
+		/* get instance of system */
 		static MainSystem* instance();
 		
-		//normal
 		void run();
-
-		void stateLoadProgress(int xProgressValue, std::string xText);
 		void needShutdown();
+
+	private:
+		MainSystem(Ogre::String xOgreCfg, Ogre::String xPluginsCfg, Ogre::String xResourcesCfg, Ogre::String xOgreLogFile, Ogre::String xMyGUILogFile);
+		~MainSystem();
 
 	private:
 		//-------------------------------------------------------------
