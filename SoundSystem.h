@@ -13,7 +13,7 @@ namespace JGC
 {
 	class SoundSystem
 	{
-		struct SndInfo
+		struct SoundInfo
 		{
 			ALuint ID;
 			std::string Filename;
@@ -31,7 +31,7 @@ namespace JGC
 
 		SoundListener *mSoundListener;
 
-		std::map<ALuint, SndInfo> mBuffers;
+		std::map<ALuint, SoundInfo> mBuffers;
 		std::list<SoundSource*> mSoundSources;
 
 	public:

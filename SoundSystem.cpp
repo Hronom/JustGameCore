@@ -62,7 +62,7 @@ namespace JGC
 		}
 
 		// Очищаем все буффера
-		for (std::map<ALuint, SndInfo>::iterator i = mBuffers.begin(); i != mBuffers.end(); i++)
+		for (std::map<ALuint, SoundInfo>::iterator i = mBuffers.begin(); i != mBuffers.end(); i++)
 			alDeleteBuffers(1, &i->second.ID);
 		// Выключаем текущий контекст
 		alcMakeContextCurrent(0);
@@ -75,7 +75,7 @@ namespace JGC
 	bool SoundSystem::loadWavFile(const std::string &xFilename, ALuint &xSourceID)
 	{
 		// Структура содержащая аудиопараметры
-		SndInfo xBuffer;
+		SoundInfo xBuffer;
 		// Формат данных в буфере
 		ALenum xFormat;
 		// Указатель на массив данных звука
@@ -89,10 +89,10 @@ namespace JGC
 		// Идентификатор буфера
 		ALuint xBufID = 0;
 
-		// Заполняем SndInfo данными
+		// Заполняем SoundInfo данными
 		xBuffer.Filename = xFilename;
 		// Ищем, а нет ли уже существующего буфера с данным звуком?
-		for (std::map<ALuint, SndInfo>::iterator i = mBuffers.begin(); i != mBuffers.end(); i++)
+		for (std::map<ALuint, SoundInfo>::iterator i = mBuffers.begin(); i != mBuffers.end(); i++)
 		{
 			if (i->second.Filename == xFilename) xBufID = i->first;
 		}

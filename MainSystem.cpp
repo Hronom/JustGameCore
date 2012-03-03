@@ -32,7 +32,7 @@ namespace JGC
 		{
 			InputSystem::instance()->injectUpdate();
 			PhysicsSystem::instance()->injectUpdate(mTimeSinceLastFrame);
-			StatesSystem::instance()->injectUpdate(mTimeSinceLastFrame);			
+			StatesSystem::instance()->injectUpdate(mTimeSinceLastFrame);
 			GraphicSystem::instance()->injectUpdate();
 
 			StatesSystem::instance()->switchStateIfNeed();
