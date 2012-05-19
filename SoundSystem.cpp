@@ -74,56 +74,56 @@ namespace JGC
 
 	bool SoundSystem::loadWavFile(const std::string &xFilename, ALuint &xSourceID)
 	{
-		// Структура содержащая аудиопараметры
-		SoundInfo xBuffer;
-		// Формат данных в буфере
-		ALenum xFormat;
-		// Указатель на массив данных звука
-		ALvoid *xData;
-		// Размер этого массива
-		ALsizei xSize;
-		// Частота звука в герцах
-		ALsizei xFreq;
-		// Идентификатор циклического воспроизведения
-		ALboolean xLoop;
-		// Идентификатор буфера
-		ALuint xBufID = 0;
+        // Структура содержащая аудиопараметры
+        SoundInfo xBuffer;
+        // Формат данных в буфере
+        ALenum xFormat;
+        // Указатель на массив данных звука
+        ALvoid *xData;
+        // Размер этого массива
+        ALsizei xSize;
+        // Частота звука в герцах
+        ALsizei xFreq;
+        // Идентификатор циклического воспроизведения
+        ALboolean xLoop;
+        // Идентификатор буфера
+        ALuint xBufID = 0;
 
-		// Заполняем SoundInfo данными
-		xBuffer.Filename = xFilename;
-		// Ищем, а нет ли уже существующего буфера с данным звуком?
-		for (std::map<ALuint, SoundInfo>::iterator i = mBuffers.begin(); i != mBuffers.end(); i++)
-		{
-			if (i->second.Filename == xFilename) xBufID = i->first;
-		}
+        // Заполняем SoundInfo данными
+        xBuffer.Filename = xFilename;
+        // Ищем, а нет ли уже существующего буфера с данным звуком?
+        for (std::map<ALuint, SoundInfo>::iterator i = mBuffers.begin(); i != mBuffers.end(); i++)
+        {
+            if (i->second.Filename == xFilename) xBufID = i->first;
+        }
 
-		// Если звук загружаем впервые
-		if (!xBufID)
-		{
-			// Создаём буфер
-			alGenBuffers(1, &xBuffer.ID);
-			if (!CheckALError()) return false;
-			// Загружаем данные из wav файла
-			alutLoadWAVFile((ALbyte *)xFilename.data(), &xFormat, &xData,	&xSize, &xFreq, &xLoop);
-			if (!CheckALError()) return false;
+        // Если звук загружаем впервые
+        if (!xBufID)
+        {
+            // Создаём буфер
+            alGenBuffers(1, &xBuffer.ID);
+            if (!CheckALError()) return false;
+            // Загружаем данные из wav файла
+            alutLoadWAVFile((ALbyte *)xFilename.data(), &xFormat, &xData,	&xSize, &xFreq, &xLoop);
+            if (!CheckALError()) return false;
 
-			xBuffer.Format = xFormat;
-			xBuffer.Rate = xFreq;
-			// Заполняем буфер данными
-			alBufferData(xBuffer.ID, xFormat, xData, xSize, xFreq);
-			if (!CheckALError()) return false;
-			// Выгружаем файл за ненадобностью
-			alutUnloadWAV(xFormat, xData, xSize, xFreq);
-			if (!CheckALError()) return false;
+            xBuffer.Format = xFormat;
+            xBuffer.Rate = xFreq;
+            // Заполняем буфер данными
+            alBufferData(xBuffer.ID, xFormat, xData, xSize, xFreq);
+            if (!CheckALError()) return false;
+            // Выгружаем файл за ненадобностью
+            alutUnloadWAV(xFormat, xData, xSize, xFreq);
+            if (!CheckALError()) return false;
 
-			// Добавляем этот буфер в массив
-			mBuffers[xBuffer.ID] = xBuffer;
-		}
-		else 
-			xBuffer = mBuffers[xBufID];
+            // Добавляем этот буфер в массив
+            mBuffers[xBuffer.ID] = xBuffer;
+        }
+        else
+            xBuffer = mBuffers[xBufID];
 
-		// Ассоциируем буфер с источником
-		alSourcei (xSourceID, AL_BUFFER, xBuffer.ID);
+        // Ассоциируем буфер с источником
+        alSourcei (xSourceID, AL_BUFFER, xBuffer.ID);
 
 		return true;
 	}
