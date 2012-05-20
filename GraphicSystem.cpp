@@ -2,237 +2,238 @@
 
 namespace JGC
 {
-	GraphicSystem* GraphicSystem::mInstance = 0;
+    GraphicSystem* GraphicSystem::mInstance = 0;
 
-	bool GraphicSystem::initialize(ISystemsListener *xMainListener, Ogre::String xOgreCfg, Ogre::String xPluginsCfg, Ogre::String xResourcesCfg, Ogre::String xOgreLogFile, Ogre::String xMyGUILogFile)
-	{
-		mInstance = new GraphicSystem(xMainListener, xOgreCfg, xPluginsCfg, xResourcesCfg, xOgreLogFile, xMyGUILogFile);
-		return mInstance->init();
-	}
+    bool GraphicSystem::initialize(ISystemsListener *xMainListener, Ogre::String xOgreCfg, Ogre::String xPluginsCfg, Ogre::String xResourcesCfg, Ogre::String xOgreLogFile, Ogre::String xMyGUILogFile)
+    {
+        mInstance = new GraphicSystem(xMainListener, xOgreCfg, xPluginsCfg, xResourcesCfg, xOgreLogFile, xMyGUILogFile);
+        return mInstance->init();
+    }
 
-	void GraphicSystem::shutdown()
-	{
-		delete mInstance;
-		mInstance = 0;
-	}
-	GraphicSystem* GraphicSystem::instance()
-	{
-		return mInstance;
-	}
+    void GraphicSystem::shutdown()
+    {
+        delete mInstance;
+        mInstance = 0;
+    }
 
-	GraphicSystem::GraphicSystem(ISystemsListener *xMainListener, Ogre::String xOgreCfg, Ogre::String xPluginsCfg, Ogre::String xResourcesCfg, Ogre::String xOgreLogFile, Ogre::String xMyGUILogFile) 
-	{ 
-		mMainListener = xMainListener;
+    GraphicSystem* GraphicSystem::instance()
+    {
+        return mInstance;
+    }
 
-		mOgreCfg = xOgreCfg;
-		mPluginsCfg = xPluginsCfg;
-		mResourcesCfg = xResourcesCfg;
-		mOgreLogFile = xOgreLogFile;
-		mMyGUILogFile = xMyGUILogFile;
-	} 
+    GraphicSystem::GraphicSystem(ISystemsListener *xMainListener, Ogre::String xOgreCfg, Ogre::String xPluginsCfg, Ogre::String xResourcesCfg, Ogre::String xOgreLogFile, Ogre::String xMyGUILogFile)
+    {
+        mMainListener = xMainListener;
 
-	GraphicSystem::~GraphicSystem()
-	{
-		//----------------------------------------------------
-		// 10 удаление
-		//----------------------------------------------------
-		// MyGUI
-		mMyGUI->shutdown();
-		delete mMyGUI;
-		mMyGUI = 0;   
+        mOgreCfg = xOgreCfg;
+        mPluginsCfg = xPluginsCfg;
+        mResourcesCfg = xResourcesCfg;
+        mOgreLogFile = xOgreLogFile;
+        mMyGUILogFile = xMyGUILogFile;
+    }
 
-		mOgrePlatform->shutdown();
-		delete mOgrePlatform;
-		mOgrePlatform = 0;
+    GraphicSystem::~GraphicSystem()
+    {
+        //----------------------------------------------------
+        // 10 удаление
+        //----------------------------------------------------
+        // MyGUI
+        mMyGUI->shutdown();
+        delete mMyGUI;
+        mMyGUI = 0;
 
-		Ogre::WindowEventUtilities::removeWindowEventListener(mRenderWindow, this);
+        mOgrePlatform->shutdown();
+        delete mOgrePlatform;
+        mOgrePlatform = 0;
 
-		// Ogre
-		delete mRoot;
-		mRoot = 0;
-	}
+        Ogre::WindowEventUtilities::removeWindowEventListener(mRenderWindow, this);
 
-	bool GraphicSystem::init()
-	{
-		//-----------------------------------------------------
-		// 1 Создание рута
-		//-----------------------------------------------------
-		mRoot = new Ogre::Root(mPluginsCfg, mOgreCfg, mOgreLogFile);
+        // Ogre
+        delete mRoot;
+        mRoot = 0;
+    }
 
-		//-----------------------------------------------------
-		// 2 Настройка приложение и создание окна
-		//-----------------------------------------------------
-		if(!(mRoot->restoreConfig() || mRoot->showConfigDialog()))
-		{
-			delete mRoot;
-			return false;
-		}
+    bool GraphicSystem::init()
+    {
+        //-----------------------------------------------------
+        // 1 Создание рута
+        //-----------------------------------------------------
+        mRoot = new Ogre::Root(mPluginsCfg, mOgreCfg, mOgreLogFile);
 
-		mRenderWindow = mRoot->initialise(true, "JustGame");
+        //-----------------------------------------------------
+        // 2 Настройка приложение и создание окна
+        //-----------------------------------------------------
+        if(!(mRoot->restoreConfig() || mRoot->showConfigDialog()))
+        {
+            delete mRoot;
+            return false;
+        }
 
-		// Set default mipmap level (note: some APIs ignore this)
-		Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
+        mRenderWindow = mRoot->initialise(true, "JustGame");
 
-		//-----------------------------------------------------
-		// 3 Загрузка ресурсов из конфига
-		//-----------------------------------------------------
-		Ogre::ConfigFile xConfigFile;
-		xConfigFile.load(mResourcesCfg);
+        // Set default mipmap level (note: some APIs ignore this)
+        Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
 
-		// Проходим по всем секция в файле
-		Ogre::ConfigFile::SectionIterator xSection = xConfigFile.getSectionIterator();
+        //-----------------------------------------------------
+        // 3 Загрузка ресурсов из конфига
+        //-----------------------------------------------------
+        Ogre::ConfigFile xConfigFile;
+        xConfigFile.load(mResourcesCfg);
 
-		Ogre::String xSecName, xTypeName, xArchName;
-		while (xSection.hasMoreElements())
-		{
-			xSecName = xSection.peekNextKey();
-			Ogre::ConfigFile::SettingsMultiMap *settings = xSection.getNext();
-			Ogre::ConfigFile::SettingsMultiMap::iterator i;
-			for (i = settings->begin(); i != settings->end();   i++)
-			{
-				xTypeName = i->first;
-				xArchName = i->second;
-				Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
-					xArchName, xTypeName, xSecName);
-			}
-		}
+        // Проходим по всем секция в файле
+        Ogre::ConfigFile::SectionIterator xSection = xConfigFile.getSectionIterator();
 
-		// Грузим все ресурсы
-		Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+        Ogre::String xSecName, xTypeName, xArchName;
+        while (xSection.hasMoreElements())
+        {
+            xSecName = xSection.peekNextKey();
+            Ogre::ConfigFile::SettingsMultiMap *settings = xSection.getNext();
+            Ogre::ConfigFile::SettingsMultiMap::iterator i;
+            for (i = settings->begin(); i != settings->end();   i++)
+            {
+                xTypeName = i->first;
+                xArchName = i->second;
+                Ogre::ResourceGroupManager::getSingleton().addResourceLocation(
+                            xArchName, xTypeName, xSecName);
+            }
+        }
 
-		//-----------------------------------------------------
-		// 4 Создание менеджера сцен
-		//
-		//		ST_GENERIC = octree
-		//		ST_EXTERIOR_CLOSE = simple terrain
-		//		ST_EXTERIOR_FAR = nature terrain (depreciated)
-		//		ST_EXTERIOR_REAL_FAR = paging landscape
-		//		ST_INTERIOR = Quake3 BSP
-		//----------------------------------------------------- 
-		mSceneManager = mRoot->createSceneManager(Ogre::ST_GENERIC); 
+        // Грузим все ресурсы
+        Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
-		//----------------------------------------------------- 
-		// 5 Создание камеры
-		//----------------------------------------------------- 
-		mCamera = mSceneManager->createCamera("MainCamera"); 
-		mCamera->setPosition(Ogre::Vector3(0,0,100));
-		mCamera->lookAt(Ogre::Vector3(0,0,0));
-		mCamera->setNearClipDistance(5);
+        //-----------------------------------------------------
+        // 4 Создание менеджера сцен
+        //
+        //		ST_GENERIC = octree
+        //		ST_EXTERIOR_CLOSE = simple terrain
+        //		ST_EXTERIOR_FAR = nature terrain (depreciated)
+        //		ST_EXTERIOR_REAL_FAR = paging landscape
+        //		ST_INTERIOR = Quake3 BSP
+        //-----------------------------------------------------
+        mSceneManager = mRoot->createSceneManager(Ogre::ST_GENERIC);
 
-		//----------------------------------------------------- 
-		// 6 Создание вьюпорта
-		//----------------------------------------------------- 
-		Ogre::Viewport* xViewport = mRenderWindow->addViewport(mCamera);
-		xViewport->setBackgroundColour(Ogre::ColourValue(0,0,0));
+        //-----------------------------------------------------
+        // 5 Создание камеры
+        //-----------------------------------------------------
+        mCamera = mSceneManager->createCamera("MainCamera");
+        mCamera->setPosition(Ogre::Vector3(0,0,100));
+        mCamera->lookAt(Ogre::Vector3(0,0,0));
+        mCamera->setNearClipDistance(5);
 
-		mCamera->setAspectRatio(Ogre::Real(xViewport->getActualWidth()) / Ogre::Real(xViewport->getActualHeight()));
+        //-----------------------------------------------------
+        // 6 Создание вьюпорта
+        //-----------------------------------------------------
+        Ogre::Viewport* xViewport = mRenderWindow->addViewport(mCamera);
+        xViewport->setBackgroundColour(Ogre::ColourValue(0,0,0));
 
-		// Set ambient light
-		mSceneManager->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
+        mCamera->setAspectRatio(Ogre::Real(xViewport->getActualWidth()) / Ogre::Real(xViewport->getActualHeight()));
 
-		//----------------------------------------------------- 
-		// 7 Инициализация MyGUI
-		//----------------------------------------------------- 
-		mOgrePlatform = new MyGUI::OgrePlatform();
-		mOgrePlatform->initialise(mRenderWindow, mSceneManager, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, mMyGUILogFile); // mWindow is Ogre::RenderWindow*, mSceneManager is Ogre::SceneManager*
-		mMyGUI = new MyGUI::Gui();
-		mMyGUI->initialise();
+        // Set ambient light
+        mSceneManager->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
 
-		//----------------------------------------------------- 
-		// 8 Добавление слушателя событий
-		//----------------------------------------------------- 
-		Ogre::WindowEventUtilities::addWindowEventListener(mRenderWindow, this);
-		mRoot->addFrameListener(this);
+        //-----------------------------------------------------
+        // 7 Инициализация MyGUI
+        //-----------------------------------------------------
+        mOgrePlatform = new MyGUI::OgrePlatform();
+        mOgrePlatform->initialise(mRenderWindow, mSceneManager, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, mMyGUILogFile); // mWindow is Ogre::RenderWindow*, mSceneManager is Ogre::SceneManager*
+        mMyGUI = new MyGUI::Gui();
+        mMyGUI->initialise();
 
-		return true;
-	}
+        //-----------------------------------------------------
+        // 8 Добавление слушателя событий
+        //-----------------------------------------------------
+        Ogre::WindowEventUtilities::addWindowEventListener(mRenderWindow, this);
+        mRoot->addFrameListener(this);
 
-	bool GraphicSystem::frameStarted(const  Ogre::FrameEvent& evt) 
-	{
-		return mMainListener->frameStarted(evt.timeSinceLastFrame);
-	}
+        return true;
+    }
 
-	bool GraphicSystem::frameEnded(const Ogre::FrameEvent& evt)
-	{
-		return mMainListener->frameEnded(evt.timeSinceLastFrame);
-	}
+    bool GraphicSystem::frameStarted(const  Ogre::FrameEvent& evt)
+    {
+        return mMainListener->frameStarted(evt.timeSinceLastFrame);
+    }
 
-	void GraphicSystem::windowResized(Ogre::RenderWindow* xRenderWindow)
-	{
-		mMainListener->windowResized(xRenderWindow->getWidth(), xRenderWindow->getHeight());
-	}
+    bool GraphicSystem::frameEnded(const Ogre::FrameEvent& evt)
+    {
+        return mMainListener->frameEnded(evt.timeSinceLastFrame);
+    }
 
-	void GraphicSystem::windowClosed(Ogre::RenderWindow* xRenderWindow)
-	{
-		mMainListener->windowClosed();
-	}
+    void GraphicSystem::windowResized(Ogre::RenderWindow* xRenderWindow)
+    {
+        mMainListener->windowResized(xRenderWindow->getWidth(), xRenderWindow->getHeight());
+    }
 
-	void GraphicSystem::injectUpdate()
-	{
-		Ogre::WindowEventUtilities::messagePump();
-		mRoot->renderOneFrame();
-	}
+    void GraphicSystem::windowClosed(Ogre::RenderWindow* xRenderWindow)
+    {
+        mMainListener->windowClosed();
+    }
 
-	void GraphicSystem::injectMouseMoved( const OIS::MouseEvent &arg )
-	{
-		//mMyGUI->injectMouseMove(arg.state.X.abs, arg.state.Y.abs, arg.state.Z.abs);
-		MyGUI::InputManager::getInstancePtr()->injectMouseMove(arg.state.X.abs, arg.state.Y.abs, arg.state.Z.abs);
-	}
+    void GraphicSystem::injectUpdate()
+    {
+        Ogre::WindowEventUtilities::messagePump();
+        mRoot->renderOneFrame();
+    }
 
-	void GraphicSystem::injectMousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
-	{
-		//mMyGUI->injectMousePress(arg.state.X.abs, arg.state.Y.abs, MyGUI::MouseButton::Enum(id));
-		MyGUI::InputManager::getInstancePtr()->injectMousePress(arg.state.X.abs, arg.state.Y.abs, MyGUI::MouseButton::Enum(id));
-	}
+    void GraphicSystem::injectMouseMoved( const OIS::MouseEvent &arg )
+    {
+        //mMyGUI->injectMouseMove(arg.state.X.abs, arg.state.Y.abs, arg.state.Z.abs);
+        MyGUI::InputManager::getInstancePtr()->injectMouseMove(arg.state.X.abs, arg.state.Y.abs, arg.state.Z.abs);
+    }
 
-	void GraphicSystem::injectMouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
-	{
-		//mMyGUI->injectMouseRelease(arg.state.X.abs, arg.state.Y.abs, MyGUI::MouseButton::Enum(id));
-		MyGUI::InputManager::getInstancePtr()->injectMouseRelease(arg.state.X.abs, arg.state.Y.abs, MyGUI::MouseButton::Enum(id));
-	}
+    void GraphicSystem::injectMousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
+    {
+        //mMyGUI->injectMousePress(arg.state.X.abs, arg.state.Y.abs, MyGUI::MouseButton::Enum(id));
+        MyGUI::InputManager::getInstancePtr()->injectMousePress(arg.state.X.abs, arg.state.Y.abs, MyGUI::MouseButton::Enum(id));
+    }
 
-	void GraphicSystem::injectKeyPressed( const OIS::KeyEvent &arg )
-	{
-		//mMyGUI->injectKeyPress(MyGUI::KeyCode::Enum(arg.key), arg.text);
-		MyGUI::InputManager::getInstancePtr()->injectKeyPress(MyGUI::KeyCode::Enum(arg.key), arg.text);
-	}
+    void GraphicSystem::injectMouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
+    {
+        //mMyGUI->injectMouseRelease(arg.state.X.abs, arg.state.Y.abs, MyGUI::MouseButton::Enum(id));
+        MyGUI::InputManager::getInstancePtr()->injectMouseRelease(arg.state.X.abs, arg.state.Y.abs, MyGUI::MouseButton::Enum(id));
+    }
 
-	void GraphicSystem::injectKeyReleased( const OIS::KeyEvent &arg )
-	{
-		//mMyGUI->injectKeyRelease(MyGUI::KeyCode::Enum(arg.key));
-		MyGUI::InputManager::getInstancePtr()->injectKeyRelease(MyGUI::KeyCode::Enum(arg.key));
-	}
+    void GraphicSystem::injectKeyPressed( const OIS::KeyEvent &arg )
+    {
+        //mMyGUI->injectKeyPress(MyGUI::KeyCode::Enum(arg.key), arg.text);
+        MyGUI::InputManager::getInstancePtr()->injectKeyPress(MyGUI::KeyCode::Enum(arg.key), arg.text);
+    }
 
-	size_t GraphicSystem::getWinHandle()
-	{
-		size_t xWinHandle = 0;
-		mRenderWindow->getCustomAttribute("WINDOW", &xWinHandle);
+    void GraphicSystem::injectKeyReleased( const OIS::KeyEvent &arg )
+    {
+        //mMyGUI->injectKeyRelease(MyGUI::KeyCode::Enum(arg.key));
+        MyGUI::InputManager::getInstancePtr()->injectKeyRelease(MyGUI::KeyCode::Enum(arg.key));
+    }
 
-		return xWinHandle;
-	}
+    size_t GraphicSystem::getWinHandle()
+    {
+        size_t xWinHandle = 0;
+        mRenderWindow->getCustomAttribute("WINDOW", &xWinHandle);
 
-	unsigned int GraphicSystem::getWinWidth()
-	{
-		return mRenderWindow->getWidth();
-	}
+        return xWinHandle;
+    }
 
-	unsigned int GraphicSystem::getWinHeight()
-	{
-		return mRenderWindow->getHeight();
-	}
+    unsigned int GraphicSystem::getWinWidth()
+    {
+        return mRenderWindow->getWidth();
+    }
 
-	Ogre::SceneManager* GraphicSystem::getSceneManager()
-	{
-		return mSceneManager;
-	}
+    unsigned int GraphicSystem::getWinHeight()
+    {
+        return mRenderWindow->getHeight();
+    }
 
-	Ogre::Camera* GraphicSystem::getCamera()
-	{
-		return mCamera;
-	}
+    Ogre::SceneManager* GraphicSystem::getSceneManager()
+    {
+        return mSceneManager;
+    }
 
-	MyGUI::Gui* GraphicSystem::getGui()
-	{
-		return mMyGUI;
-	}
+    Ogre::Camera* GraphicSystem::getCamera()
+    {
+        return mCamera;
+    }
+
+    MyGUI::Gui* GraphicSystem::getGui()
+    {
+        return mMyGUI;
+    }
 }
