@@ -3,6 +3,24 @@
 
 namespace JGC
 {
+    EntitySystem* EntitySystem::mInstance = 0;
+
+    void EntitySystem::initialize()
+    {
+        mInstance = new EntitySystem();
+    }
+
+    void EntitySystem::shutdown()
+    {
+        delete mInstance;
+        mInstance = 0;
+    }
+
+    EntitySystem* EntitySystem::instance()
+    {
+        return mInstance;
+    }
+
     EntitySystem::EntitySystem()
     {
 
@@ -11,38 +29,6 @@ namespace JGC
     EntitySystem::~EntitySystem()
     {
 
-    }
-
-    void EntitySystem::update()
-    {
-        QMultiMap<qint32, ISystem*>::iterator xSystemsIter;
-        xSystemsIter = mSystems.begin();
-        for( ; xSystemsIter != mSystems.end(); ++xSystemsIter)
-        {
-            QMultiMap<QString, IComponent*> xEntitys;
-
-            QString xNodeType;
-            xNodeType = (*xSystemsIter)->getNodeType();
-            QList<QString> xEntitysNames = mNodes.values(xNodeType);
-
-            QList<QString>::iterator xENIter;
-            xENIter = xEntitysNames.begin();
-            for( ; xENIter != xEntitysNames.end(); ++xENIter)
-            {
-                QList<IComponent*> xComponents;
-                xComponents = mEntitys.values((*xENIter));
-
-                QList<IComponent*>::iterator xCompIter;
-                xCompIter = xComponents.begin();
-                for( ; xCompIter != xComponents.end(); ++xCompIter)
-                {
-                    xEntitys.insert((*xENIter), (*xCompIter));
-                }
-            }
-
-            if(xEntitys.size() > 0)
-                (*xSystemsIter)->proceedEntitys(xEntitys);
-        }
     }
 
     void EntitySystem::addComponentToNode(QString xNodeName, QString xComponentType)
@@ -62,65 +48,75 @@ namespace JGC
 
     void EntitySystem::addComponent(QString xEntityName, IComponent *xComponent)
     {
-        QList<QString> xNodesNames;
-        xNodesNames = mNodesLibrary.keys(xComponent->getType());
-
-        QList<QString>::iterator xNodesIter;
-        xNodesIter = xNodesNames.begin();
-        for( ; xNodesIter != xNodesNames.end(); ++xNodesIter)
+        Entity *xEntity;
+        // Add component
+        if(mEntitys.contains(xEntityName))
         {
-            QList<QString> xComponentsTypes;
-            xComponentsTypes = mNodesLibrary.values((*xNodesIter));
-            xComponentsTypes.removeAll(xComponent->getType());
+            xEntity = mEntitys.value(xEntityName);
+            xEntity->mComponents.insert(xComponent->getType(), xComponent);
+        }
+        else
+        {
+            xEntity = new Entity(xEntityName);
+            xEntity->mComponents.insert(xComponent->getType(), xComponent);
+            mEntitys.insert(xEntityName, xEntity);
+        }
 
-            QList<IComponent*> xEntityComponents;
-            xEntityComponents = mEntitys.values(xEntityName);
+        // Update nodes
+        {
+            QString xComType = xComponent->getType();
 
-            bool xHaveAllComponents = true;
-            QList<QString>::iterator xTypesIter;
-            xTypesIter = xComponentsTypes.begin();
-            for( ; xTypesIter != xComponentsTypes.end(); ++xTypesIter)
+            // Get list of nodes names that have type of added component
+            QList<QString> xNodesNames;
+            xNodesNames = mNodesLibrary.keys(xComType);
+
+            QList<QString>::iterator xNodesNamesIter;
+            xNodesNamesIter = xNodesNames.begin();
+            for(; xNodesNamesIter != xNodesNames.end(); ++xNodesNamesIter)
             {
-                bool xHaveComponent = false;
+                // Form list of needed components to be in node
+                QList<QString> xComTypes;
+                xComTypes = mNodesLibrary.values((*xNodesNamesIter));
+                xComTypes.removeAll(xComType);
 
-                QList<IComponent*>::iterator xComponIter;
-                xComponIter = xEntityComponents.begin();
-                for( ; xComponIter != xEntityComponents.end(); ++xComponIter)
+                // Check is entity have all components to be in current node
+                bool xHaveAllComponents = true;
+
+                QList<QString>::iterator xComTypesIter;
+                xComTypesIter = xComTypes.begin();
+                for(; xComTypesIter != xComTypes.end(); ++xComTypesIter)
                 {
-                    if((*xComponIter)->getType() == (*xTypesIter))
+                    if(!xEntity->hasComponent((*xComTypesIter)))
                     {
-                        xHaveComponent = true;
+                        xHaveAllComponents = false;
                         break;
                     }
                 }
 
-                if(xHaveComponent == false)
-                {
-                    xHaveAllComponents = false;
-                    break;
-                }
+                if(xHaveAllComponents)
+                    mNodes.insert((*xNodesNamesIter), xEntityName);
             }
-
-            if(xHaveAllComponents == true)
-                mNodes.insert((*xNodesIter), xEntityName);
         }
-
-        mEntitys.insert(xEntityName, xComponent);
     }
 
     void EntitySystem::removeComponent(QString xEntityName, IComponent *xComponent)
     {
-        QList<QString> xNodesNames;
-        xNodesNames = mNodesLibrary.keys(xComponent->getType());
-
-        QList<QString>::iterator xNodesIter;
-        xNodesIter = xNodesNames.begin();
-        for( ; xNodesIter != xNodesNames.end(); ++xNodesIter)
+        if(mEntitys.contains(xEntityName))
         {
-            mNodes.remove((*xNodesIter), xEntityName);
-        }
+            // Remove entity
+            Entity *xEntity;
+            xEntity = mEntitys.value(xEntityName);
+            xEntity->mComponents.remove(xComponent->getType());
 
-        mEntitys.remove(xEntityName, xComponent);
+            // Remove node
+            QList<QString> xNodesNames;
+            xNodesNames = mNodesLibrary.keys(xComponent->getType());
+
+            QList<QString>::iterator xNodesNamesIter;
+            xNodesNamesIter = xNodesNames.begin();
+            for( ; xNodesNamesIter != xNodesNames.end(); ++xNodesNamesIter)
+                mNodes.remove((*xNodesNamesIter), xEntityName);
+        }
     }
 
     void EntitySystem::addSystem(qint32 xPriority, ISystem *xSystem)
@@ -143,43 +139,71 @@ namespace JGC
         mSystems.remove(xPriority, xSystem);
     }
 
+    void EntitySystem::injectUpdate(const float &xTimeSinceLastUpdate)
+    {
+        QMultiHash<qint32, ISystem*>::iterator xSystemsIter;
+        xSystemsIter = mSystems.begin();
+        while(xSystemsIter != mSystems.end())
+        {
+            QVector<Entity*> xEntitys;
+
+            QString xNodeType;
+            xNodeType = (*xSystemsIter)->getNodeType();
+            QList<QString> xEntitysNames = mNodes.values(xNodeType);
+
+            for(int i = 0; i < xEntitysNames.size(); ++i)
+            {
+                Entity *xEntity;
+                xEntity = mEntitys.value(xEntitysNames.at(i));
+                xEntitys.push_back(xEntity);
+            }
+
+            if(xEntitys.size() > 0)
+                (*xSystemsIter)->proceedEntitys(xEntitys, xTimeSinceLastUpdate);
+
+            ++xSystemsIter;
+        }
+    }
+
     void EntitySystem::printInfo()
     {
+        qDebug()<<"--------------------- EntitySystem::printInfo ---------------------";
         {
             qDebug()<<"--- Nodes library:";
-            QMultiMap<QString, QString>::iterator i = mNodesLibrary.begin();
+            QMultiHash<QString, QString>::iterator i = mNodesLibrary.begin();
             while(i != mNodesLibrary.end())
             {
-                qDebug()<<i.key()<<i.value();
+                qDebug()<<"Node name:"<<i.key()<<"Component type:"<<i.value();
                 ++i;
             }
         }
         {
             qDebug()<<"--- Enitys:";
-            QMultiMap<QString, IComponent*>::iterator i = mEntitys.begin();
+            QHash<QString, Entity*>::iterator i = mEntitys.begin();
             while(i != mEntitys.end())
             {
-                qDebug()<<i.key()<<i.value()->getType();
+                qDebug()<<"Name:"<<i.value()->getName();
                 ++i;
             }
         }
         {
             qDebug()<<"--- Nodes:";
-            QMultiMap<QString, QString>::iterator i = mNodes.begin();
+            QMultiHash<QString, QString>::iterator i = mNodes.begin();
             while(i != mNodes.end())
             {
-                qDebug()<<i.key()<<i.value();
+                qDebug()<<"Node name:"<<i.key()<<"Entity name:"<<i.value();
                 ++i;
             }
         }
         {
             qDebug()<<"--- Systems:";
-            QMultiMap<qint32, ISystem*>::iterator i = mSystems.begin();
+            QMultiHash<qint32, ISystem*>::iterator i = mSystems.begin();
             while(i != mSystems.end())
             {
-                qDebug()<<i.key()<<i.value()->getNodeType();
+                qDebug()<<"System name:"<<i.key()<<"Node type:"<<i.value()->getNodeType();
                 ++i;
             }
         }
+        qDebug()<<"-------------------------------------------------------------------";
     }
 }

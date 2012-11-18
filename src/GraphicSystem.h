@@ -31,7 +31,7 @@ namespace JGC
 		Ogre::Root *mRoot;
 		Ogre::RenderWindow *mRenderWindow;
 		Ogre::SceneManager *mSceneManager;
-		Ogre::Camera* mCamera; 
+        Ogre::Camera* mCamera;
 
 		MyGUI::OgrePlatform *mOgrePlatform;
 		MyGUI::Gui *mMyGUI;
@@ -73,7 +73,7 @@ namespace JGC
 		unsigned int getWinWidth();
 		unsigned int getWinHeight();
 		Ogre::SceneManager* getSceneManager();
-		Ogre::Camera* getCamera();
+        Ogre::Camera* getCamera();
 		MyGUI::Gui* getGui();
 	};
 }

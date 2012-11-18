@@ -21,8 +21,9 @@ SET(HEADERS
 ./src/SoundSystem.h
 ./src/StatesSystem.h
 ./src/Utils.h
-./src/EntitySystem/ISystem.h
+./src/EntitySystem/Entity.h
 ./src/EntitySystem/IComponent.h
+./src/EntitySystem/ISystem.h
 ./src/EntitySystem/EntitySystem.h
 )
  
@@ -38,6 +39,7 @@ SET(SOURCES
 ./src/SoundSystem.cpp
 ./src/StatesSystem.cpp
 ./src/Utils.cpp
+./src/EntitySystem/Entity.cpp
 ./src/EntitySystem/EntitySystem.cpp
 )
 

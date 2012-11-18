@@ -111,6 +111,7 @@ namespace JGC
         //		ST_INTERIOR = Quake3 BSP
         //-----------------------------------------------------
         mSceneManager = mRoot->createSceneManager(Ogre::ST_GENERIC);
+        mSceneManager->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
 
         //-----------------------------------------------------
         // 5 Создание камеры
@@ -128,14 +129,11 @@ namespace JGC
 
         mCamera->setAspectRatio(Ogre::Real(xViewport->getActualWidth()) / Ogre::Real(xViewport->getActualHeight()));
 
-        // Set ambient light
-        mSceneManager->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
-
         //-----------------------------------------------------
         // 7 Инициализация MyGUI
         //-----------------------------------------------------
         mOgrePlatform = new MyGUI::OgrePlatform();
-        mOgrePlatform->initialise(mRenderWindow, mSceneManager, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, mMyGUILogFile); // mWindow is Ogre::RenderWindow*, mSceneManager is Ogre::SceneManager*
+        mOgrePlatform->initialise(mRenderWindow, mSceneManager, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, mMyGUILogFile);
         mMyGUI = new MyGUI::Gui();
         mMyGUI->initialise();
 

@@ -3,7 +3,7 @@
 #include "PhysicsSystem.h"
 #include "SoundSystem.h"
 #include "InputSystem.h"
-#include "StatesSystem.h"
+#include "EntitySystem/EntitySystem.h"
 #include "PhysicsDebugDrawer.h"
 
 namespace JGC
@@ -32,10 +32,8 @@ namespace JGC
 		{
 			InputSystem::instance()->injectUpdate();
 			PhysicsSystem::instance()->injectUpdate(mTimeSinceLastFrame);
-			StatesSystem::instance()->injectUpdate(mTimeSinceLastFrame);
+            EntitySystem::instance()->injectUpdate(mTimeSinceLastFrame);
 			GraphicSystem::instance()->injectUpdate();
-
-			StatesSystem::instance()->switchStateIfNeed();
 		}
 	}
 
@@ -57,7 +55,7 @@ namespace JGC
 			GraphicSystem::instance()->getWinHandle(),
 			GraphicSystem::instance()->getWinWidth(), 
 			GraphicSystem::instance()->getWinHeight());
-		StatesSystem::initialize(this);
+        EntitySystem::initialize();
 
 		/*mPhysicsDebugDrawer = new PhysicsDebugDrawer(GraphicSystem::instance()->getSceneManager());
 		PhysicsSystem::instance()->setDebugDrawer(mPhysicsDebugDrawer);*/
@@ -66,7 +64,7 @@ namespace JGC
 	MainSystem::~MainSystem()
 	{
 		//delete mPhysicsDebugDrawer;
-		StatesSystem::shutdown();
+        EntitySystem::shutdown();
 		InputSystem::shutdown();
 		SoundSystem::shutdown();
 		PhysicsSystem::shutdown();
@@ -102,30 +100,25 @@ namespace JGC
 	void MainSystem::injectMouseMoved(const OIS::MouseEvent& e)
 	{
 		GraphicSystem::instance()->injectMouseMoved(e);
-		StatesSystem::instance()->injectMouseMoved(e);
 	}
 
 	void MainSystem::injectMousePressed(const OIS::MouseEvent& e, OIS::MouseButtonID id)
 	{
 		GraphicSystem::instance()->injectMousePressed(e, id);
-		StatesSystem::instance()->injectMousePressed(e, id);
 	}
 
 	void MainSystem::injectMouseReleased(const OIS::MouseEvent& e, OIS::MouseButtonID id)
 	{
 		GraphicSystem::instance()->injectMouseReleased(e, id);
-		StatesSystem::instance()->injectMouseReleased(e, id);
 	}
 
 	void MainSystem::injectKeyPressed(const OIS::KeyEvent& e)
 	{
 		GraphicSystem::instance()->injectKeyPressed(e);
-		StatesSystem::instance()->injectKeyPressed(e);
 	}
 
 	void MainSystem::injectKeyReleased(const OIS::KeyEvent& e)
 	{
 		GraphicSystem::instance()->injectKeyReleased(e);
-		StatesSystem::instance()->injectKeyReleased(e);
 	}
 }

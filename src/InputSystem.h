@@ -6,6 +6,13 @@
 
 namespace JGC
 {
+    struct MousePos
+    {
+        int x;
+        int y;
+        int z;
+    };
+
 	class InputSystem : public OIS::MouseListener, public OIS::KeyListener
 	{
 	private:
@@ -30,6 +37,11 @@ namespace JGC
 	public:
 		void injectUpdate();
 		void injectWindowResized(unsigned int xNewWidth, unsigned int xNewHeight);
+
+        bool isKeyDown(const OIS::KeyCode &xKey);
+        bool isKeyDown(const OIS::MouseButtonID &xKey);
+
+        OIS::MouseState getMouseState();
 
 	private:
 		bool mouseMoved(const OIS::MouseEvent& e);

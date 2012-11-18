@@ -1,32 +1,41 @@
 #ifndef ENTITYSYSTEM_H
 #define ENTITYSYSTEM_H
 
-#include <QString>
-#include <QMultiMap>
-
+#include "Entity.h"
 #include "IComponent.h"
 #include "ISystem.h"
+
+#include <QString>
+#include <QMultiHash>
 
 namespace JGC
 {
     class EntitySystem
     {
     private:
+        static EntitySystem* mInstance;
+
         /** Node name - Component type */
-        QMultiMap<QString, QString> mNodesLibrary;
-        /** Entity name - Component */
-        QMultiMap<QString, IComponent*> mEntitys;
+        QMultiHash<QString, QString> mNodesLibrary;
+
+        /** Entity name - Entity */
+        QHash<QString, Entity*> mEntitys;
         /** Node name - Entity name */
-        QMultiMap<QString, QString> mNodes;
+        QMultiHash<QString, QString> mNodes;
+
         /** Priority - System */
-        QMultiMap<qint32, ISystem*> mSystems;
+        QMultiHash<qint32, ISystem*> mSystems;
 
     public:
+        static void initialize();
+        static void shutdown();
+        static EntitySystem* instance();
+
+    private:
         EntitySystem();
         ~EntitySystem();
 
-        void update();
-
+    public:
         void addComponentToNode(QString xNodeName, QString xComponentType);
         void removeComponentFromNode(QString xNodeName, QString xComponentType);
 
@@ -37,6 +46,8 @@ namespace JGC
         void addSystem(qint32 xPriority, ISystem* xSystem);
         void changeSystemPriority(ISystem* xSystem, qint32 xNewPriority);
         void removeSystem(ISystem* xSystem);
+
+        void injectUpdate(const float& xTimeSinceLastUpdate);
 
         void printInfo();
     };
