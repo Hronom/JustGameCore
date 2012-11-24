@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.8)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 SET(PROJECT JustGameCore)
 PROJECT(${PROJECT})
@@ -7,40 +7,44 @@ PROJECT(${PROJECT})
 # Setting source files for this project
 ######################################################################
 SET(HEADERS
-./src/GraphicSystem.h
-./src/ILoadScreen.h
-./src/InputSystem.h
-./src/IState.h
-./src/ISystemsListener.h
 ./src/MainSystem.h
+./src/ISystemsListener.h
+./src/Utils.h
+./src/GraphicSystem.h
 ./src/MyMotionState.h
 ./src/PhysicsDebugDrawer.h
 ./src/PhysicsSystem.h
+./src/InputSystem.h
 ./src/SoundListener.h
 ./src/SoundSource.h
 ./src/SoundSystem.h
+./src/ILoadScreen.h
+./src/IState.h
 ./src/StatesSystem.h
-./src/Utils.h
-./src/EntitySystem/Entity.h
-./src/EntitySystem/IComponent.h
-./src/EntitySystem/ISystem.h
-./src/EntitySystem/EntitySystem.h
+./src/Entity.h
+./src/IComponent.h
+./src/ISystem.h
+./src/EntitySystem.h
+./src/CountersSystem.h
+./src/Counter.h
 )
  
 SET(SOURCES
-./src/GraphicSystem.cpp
-./src/InputSystem.cpp
 ./src/MainSystem.cpp
+./src/Utils.cpp
+./src/GraphicSystem.cpp
 ./src/MyMotionState.cpp
 ./src/PhysicsDebugDrawer.cpp
 ./src/PhysicsSystem.cpp
+./src/InputSystem.cpp
 ./src/SoundListener.cpp
 ./src/SoundSource.cpp
 ./src/SoundSystem.cpp
 ./src/StatesSystem.cpp
-./src/Utils.cpp
-./src/EntitySystem/Entity.cpp
-./src/EntitySystem/EntitySystem.cpp
+./src/Entity.cpp
+./src/EntitySystem.cpp
+./src/CountersSystem.cpp
+./src/Counter.cpp
 )
 
 ######################################################################

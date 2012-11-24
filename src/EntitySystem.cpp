@@ -46,6 +46,21 @@ namespace JGC
         mEntitys.remove(xName);
     }
 
+    QVector<Entity*> EntitySystem::getEntitysInNode(QString xNodeName)
+    {
+        QVector<Entity*> xEntitys;
+
+        QList<QString> xEntitysNames = mNodes.values(xNodeName);
+        for(int i = 0; i < xEntitysNames.size(); ++i)
+        {
+            Entity *xEntity;
+            xEntity = mEntitys.value(xEntitysNames.at(i));
+            xEntitys.push_back(xEntity);
+        }
+
+        return xEntitys;
+    }
+
     void EntitySystem::addComponent(QString xEntityName, IComponent *xComponent)
     {
         Entity *xEntity;
@@ -145,22 +160,7 @@ namespace JGC
         xSystemsIter = mSystems.begin();
         while(xSystemsIter != mSystems.end())
         {
-            QVector<Entity*> xEntitys;
-
-            QString xNodeType;
-            xNodeType = (*xSystemsIter)->getNodeType();
-            QList<QString> xEntitysNames = mNodes.values(xNodeType);
-
-            for(int i = 0; i < xEntitysNames.size(); ++i)
-            {
-                Entity *xEntity;
-                xEntity = mEntitys.value(xEntitysNames.at(i));
-                xEntitys.push_back(xEntity);
-            }
-
-            if(xEntitys.size() > 0)
-                (*xSystemsIter)->proceedEntitys(xEntitys, xTimeSinceLastUpdate);
-
+            (*xSystemsIter)->injectUpdate(xTimeSinceLastUpdate);
             ++xSystemsIter;
         }
     }
@@ -195,7 +195,7 @@ namespace JGC
                 ++i;
             }
         }
-        {
+        /*{
             qDebug()<<"--- Systems:";
             QMultiHash<qint32, ISystem*>::iterator i = mSystems.begin();
             while(i != mSystems.end())
@@ -203,7 +203,7 @@ namespace JGC
                 qDebug()<<"System name:"<<i.key()<<"Node type:"<<i.value()->getNodeType();
                 ++i;
             }
-        }
+        }*/
         qDebug()<<"-------------------------------------------------------------------";
     }
 }

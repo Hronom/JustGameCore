@@ -4,7 +4,6 @@
 #include <string>
 
 #include "ISystemsListener.h"
-#include "IState.h"
 
 namespace JGC
 {

@@ -1,10 +1,11 @@
 #include "MainSystem.h"
 #include "GraphicSystem.h"
 #include "PhysicsSystem.h"
+#include "PhysicsDebugDrawer.h"
 #include "SoundSystem.h"
 #include "InputSystem.h"
-#include "EntitySystem/EntitySystem.h"
-#include "PhysicsDebugDrawer.h"
+#include "EntitySystem.h"
+#include "CountersSystem.h"
 
 namespace JGC
 {
@@ -56,6 +57,7 @@ namespace JGC
 			GraphicSystem::instance()->getWinWidth(), 
 			GraphicSystem::instance()->getWinHeight());
         EntitySystem::initialize();
+        CountersSystem::initialize();
 
 		/*mPhysicsDebugDrawer = new PhysicsDebugDrawer(GraphicSystem::instance()->getSceneManager());
 		PhysicsSystem::instance()->setDebugDrawer(mPhysicsDebugDrawer);*/
@@ -69,6 +71,7 @@ namespace JGC
 		SoundSystem::shutdown();
 		PhysicsSystem::shutdown();
 		GraphicSystem::shutdown();
+        CountersSystem::shutdown();
 	}
 
 	//-------------------------------------------------------------

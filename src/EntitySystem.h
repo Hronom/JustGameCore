@@ -40,6 +40,7 @@ namespace JGC
         void removeComponentFromNode(QString xNodeName, QString xComponentType);
 
         void removeEntity(QString xName);
+        QVector<Entity*> getEntitysInNode(QString xNodeName);
         void addComponent(QString xEntityName, IComponent* xComponent);
         void removeComponent(QString xEntityName, IComponent* xComponent);
 

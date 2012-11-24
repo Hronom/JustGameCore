@@ -1,18 +1,12 @@
 #ifndef INPUTSYSTEM_H
 #define INPUTSYSTEM_H
 
-#include <OIS/OIS.h>
 #include "ISystemsListener.h"
+
+#include <OIS/OIS.h>
 
 namespace JGC
 {
-    struct MousePos
-    {
-        int x;
-        int y;
-        int z;
-    };
-
 	class InputSystem : public OIS::MouseListener, public OIS::KeyListener
 	{
 	private:

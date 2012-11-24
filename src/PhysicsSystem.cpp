@@ -68,4 +68,42 @@ namespace JGC
 	{
 		return mDynamicsWorld;
 	}
+
+    QVector<QPair<const btCollisionObject *, const btCollisionObject *> > PhysicsSystem::getCollidedObjects()
+    {
+        QVector<QPair<const btCollisionObject *, const btCollisionObject *> > xCollidedObjects;
+
+        const btCollisionObject *xObjectA = 0;
+        const btCollisionObject *xObjectB = 0;
+
+        int xNumManifolds = mDynamicsWorld->getDispatcher()->getNumManifolds();
+        for(int i = 0; i < xNumManifolds; ++i)
+        {
+            btPersistentManifold *xContactManifold =  mDynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
+            const btCollisionObject *xObjectACandidate = static_cast<const btCollisionObject *>(xContactManifold->getBody0());
+            const btCollisionObject *xObjectBCandidate = static_cast<const btCollisionObject *>(xContactManifold->getBody1());
+
+            if(xObjectA == 0 && xObjectB == 0)
+            {
+                xObjectA = xObjectACandidate;
+                xObjectB = xObjectBCandidate;
+                QPair<const btCollisionObject *, const btCollisionObject *> xPair;
+                xPair.first = xObjectA;
+                xPair.second = xObjectB;
+                xCollidedObjects.push_back(xPair);
+            }
+            else if( (xObjectA != xObjectACandidate && xObjectB != xObjectBCandidate) &&
+                     (xObjectA != xObjectBCandidate && xObjectB != xObjectACandidate))
+            {
+                xObjectA = xObjectACandidate;
+                xObjectB = xObjectBCandidate;
+                QPair<const btCollisionObject *, const btCollisionObject *> xPair;
+                xPair.first = xObjectA;
+                xPair.second = xObjectB;
+                xCollidedObjects.push_back(xPair);
+            }
+        }
+
+        return xCollidedObjects;
+    }
 }

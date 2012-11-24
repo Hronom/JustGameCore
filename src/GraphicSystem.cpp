@@ -84,12 +84,12 @@ namespace JGC
         Ogre::ConfigFile::SectionIterator xSection = xConfigFile.getSectionIterator();
 
         Ogre::String xSecName, xTypeName, xArchName;
-        while (xSection.hasMoreElements())
+        while(xSection.hasMoreElements())
         {
             xSecName = xSection.peekNextKey();
             Ogre::ConfigFile::SettingsMultiMap *settings = xSection.getNext();
             Ogre::ConfigFile::SettingsMultiMap::iterator i;
-            for (i = settings->begin(); i != settings->end();   i++)
+            for(i = settings->begin(); i != settings->end(); ++i)
             {
                 xTypeName = i->first;
                 xArchName = i->second;

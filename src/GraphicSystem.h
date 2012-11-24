@@ -11,7 +11,6 @@
 #include <OIS\OIS.h>
 
 #include "ISystemsListener.h"
-#include "IState.h"
 
 namespace JGC
 {

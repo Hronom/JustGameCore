@@ -13,8 +13,7 @@ namespace JGC
 	public:
         virtual ~ISystem(){}
 
-        virtual QString getNodeType() = 0;
-        virtual void proceedEntitys(QVector<Entity*> xEntitys, const float &xTimeSinceLastUpdate) = 0;
+        virtual void injectUpdate(const float &xTimeSinceLastUpdate) = 0;
 	};
 }
 

@@ -6,6 +6,9 @@
 #include <Ogre.h>
 #include <btBulletDynamicsCommon.h>
 
+#include <QVector>
+#include <QPair>
+
 namespace JGC
 {
 	class PhysicsSystem
@@ -36,6 +39,7 @@ namespace JGC
 		void injectUpdate(const float& xTimeSinceLastFrame);
 		void setDebugDrawer(btIDebugDraw* xBtIDebugDraw);
 		btDiscreteDynamicsWorld* getDynamicsWorld();
+        QVector<QPair<const btCollisionObject *, const btCollisionObject *> > getCollidedObjects();
 	};
 }
 

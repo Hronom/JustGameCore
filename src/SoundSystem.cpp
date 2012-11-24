@@ -1,6 +1,5 @@
 #include "SoundSystem.h"
 
-
 namespace JGC
 {
 	SoundSystem* SoundSystem::mInstance = 0;
