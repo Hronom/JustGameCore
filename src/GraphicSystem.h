@@ -74,6 +74,8 @@ namespace JGC
 		Ogre::SceneManager* getSceneManager();
         Ogre::Camera* getCamera();
 		MyGUI::Gui* getGui();
+
+        Ogre::Vector3 getMouseWorldCoord(Ogre::Real xDistance);
 	};
 }
 

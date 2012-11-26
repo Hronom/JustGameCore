@@ -3,9 +3,7 @@
 
 #include "ISystemsListener.h"
 
-#include <Ogre.h>
 #include <btBulletDynamicsCommon.h>
-
 #include <QVector>
 #include <QPair>
 
@@ -26,14 +24,14 @@ namespace JGC
 		btDiscreteDynamicsWorld* mDynamicsWorld;
 
 	public:
-		static void initialize(ISystemsListener *xMainListener, Ogre::SceneManager *xSceneManager);
+        static void initialize(ISystemsListener *xMainListener);
 		static void shutdown();
 		static PhysicsSystem* instance();
 
 	private: 
 		PhysicsSystem(ISystemsListener *xMainListener);
 		~PhysicsSystem();
-		void init(Ogre::SceneManager *xSceneManager);
+        void init();
 
 	public:
 		void injectUpdate(const float& xTimeSinceLastFrame);

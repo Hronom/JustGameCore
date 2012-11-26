@@ -174,31 +174,26 @@ namespace JGC
 
     void GraphicSystem::injectMouseMoved( const OIS::MouseEvent &arg )
     {
-        //mMyGUI->injectMouseMove(arg.state.X.abs, arg.state.Y.abs, arg.state.Z.abs);
         MyGUI::InputManager::getInstancePtr()->injectMouseMove(arg.state.X.abs, arg.state.Y.abs, arg.state.Z.abs);
     }
 
     void GraphicSystem::injectMousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
     {
-        //mMyGUI->injectMousePress(arg.state.X.abs, arg.state.Y.abs, MyGUI::MouseButton::Enum(id));
         MyGUI::InputManager::getInstancePtr()->injectMousePress(arg.state.X.abs, arg.state.Y.abs, MyGUI::MouseButton::Enum(id));
     }
 
     void GraphicSystem::injectMouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
     {
-        //mMyGUI->injectMouseRelease(arg.state.X.abs, arg.state.Y.abs, MyGUI::MouseButton::Enum(id));
         MyGUI::InputManager::getInstancePtr()->injectMouseRelease(arg.state.X.abs, arg.state.Y.abs, MyGUI::MouseButton::Enum(id));
     }
 
     void GraphicSystem::injectKeyPressed( const OIS::KeyEvent &arg )
     {
-        //mMyGUI->injectKeyPress(MyGUI::KeyCode::Enum(arg.key), arg.text);
         MyGUI::InputManager::getInstancePtr()->injectKeyPress(MyGUI::KeyCode::Enum(arg.key), arg.text);
     }
 
     void GraphicSystem::injectKeyReleased( const OIS::KeyEvent &arg )
     {
-        //mMyGUI->injectKeyRelease(MyGUI::KeyCode::Enum(arg.key));
         MyGUI::InputManager::getInstancePtr()->injectKeyRelease(MyGUI::KeyCode::Enum(arg.key));
     }
 
@@ -233,5 +228,13 @@ namespace JGC
     MyGUI::Gui* GraphicSystem::getGui()
     {
         return mMyGUI;
+    }
+
+    Ogre::Vector3 GraphicSystem::getMouseWorldCoord(Ogre::Real xDistance)
+    {
+        MyGUI::IntPoint xMousePosition = MyGUI::InputManager::getInstancePtr()->getMousePosition();
+        MyGUI::IntSize xSize = MyGUI::RenderManager::getInstance().getViewSize();
+        Ogre::Ray xRay = mCamera->getCameraToViewportRay(xMousePosition.left / float(xSize.width), xMousePosition.top / float(xSize.height));
+        return xRay.getPoint(xDistance);
     }
 }

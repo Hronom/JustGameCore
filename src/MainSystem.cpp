@@ -50,7 +50,7 @@ namespace JGC
 		mNeedShutdown = false;
 
 		GraphicSystem::initialize(this, xOgreCfg, xPluginsCfg, xResourcesCfg, xOgreLogFile, xMyGUILogFile);
-		PhysicsSystem::initialize(this, GraphicSystem::instance()->getSceneManager());
+        PhysicsSystem::initialize(this);
 		SoundSystem::initialize(this);
 		InputSystem::initialize(this, 
 			GraphicSystem::instance()->getWinHandle(),

@@ -5,10 +5,10 @@ namespace JGC
 {
 	PhysicsSystem* PhysicsSystem::mInstance = 0;
 
-	void PhysicsSystem::initialize(ISystemsListener *xMainListener, Ogre::SceneManager *xSceneManager)
+    void PhysicsSystem::initialize(ISystemsListener *xMainListener)
 	{
 		mInstance = new PhysicsSystem(xMainListener);
-		mInstance->init(xSceneManager);
+        mInstance->init();
 	}
 
 	void PhysicsSystem::shutdown()
@@ -36,7 +36,7 @@ namespace JGC
 		delete mBroadphase;
 	}
 
-	void PhysicsSystem::init(Ogre::SceneManager *xSceneManager)
+    void PhysicsSystem::init()
 	{
 		// Build the broadphase
 		mBroadphase = new btDbvtBroadphase();
@@ -55,7 +55,7 @@ namespace JGC
 
 	void PhysicsSystem::injectUpdate(const float& xTimeSinceLastFrame)
 	{
-		mDynamicsWorld->stepSimulation(xTimeSinceLastFrame, 10);	// update Bullet Physics animation
+        mDynamicsWorld->stepSimulation(xTimeSinceLastFrame, 10);	// update Bullet Physics animation
 		mDynamicsWorld->debugDrawWorld();
 	}
 
