@@ -1,52 +1,40 @@
-#include "EntitySystem.h"
+#include "World.h"
+
 #include <QDebug>
 
 namespace JGC
 {
-    EntitySystem* EntitySystem::mInstance = 0;
-
-    void EntitySystem::initialize()
+    World::World(QString xWorldName)
     {
-        mInstance = new EntitySystem();
+        mWorldName = xWorldName;
     }
 
-    void EntitySystem::shutdown()
-    {
-        delete mInstance;
-        mInstance = 0;
-    }
-
-    EntitySystem* EntitySystem::instance()
-    {
-        return mInstance;
-    }
-
-    EntitySystem::EntitySystem()
+    World::~World()
     {
 
     }
 
-    EntitySystem::~EntitySystem()
+    QString World::getName()
     {
-
+        return mWorldName;
     }
 
-    void EntitySystem::addComponentToNode(QString xNodeName, QString xComponentType)
+    void World::addComponentToNode(QString xNodeName, QString xComponentType)
     {
         mNodesLibrary.insert(xNodeName, xComponentType);
     }
 
-    void EntitySystem::removeComponentFromNode(QString xNodeName, QString xComponentType)
+    void World::removeComponentFromNode(QString xNodeName, QString xComponentType)
     {
         mNodesLibrary.remove(xNodeName, xComponentType);
     }
 
-    void EntitySystem::removeEntity(QString xName)
+    void World::removeEntity(QString xName)
     {
         mEntitys.remove(xName);
     }
 
-    QVector<Entity*> EntitySystem::getEntitysInNode(QString xNodeName)
+    QVector<Entity*> World::getEntitysInNode(QString xNodeName)
     {
         QVector<Entity*> xEntitys;
 
@@ -61,7 +49,7 @@ namespace JGC
         return xEntitys;
     }
 
-    void EntitySystem::addComponent(QString xEntityName, IComponent *xComponent)
+    void World::addComponent(QString xEntityName, IComponent *xComponent)
     {
         Entity *xEntity;
         // Add component
@@ -114,7 +102,7 @@ namespace JGC
         }
     }
 
-    void EntitySystem::removeComponent(QString xEntityName, IComponent *xComponent)
+    void World::removeComponent(QString xEntityName, IComponent *xComponent)
     {
         if(mEntitys.contains(xEntityName))
         {
@@ -134,12 +122,12 @@ namespace JGC
         }
     }
 
-    void EntitySystem::addSystem(qint32 xPriority, ISystem *xSystem)
+    void World::addSystem(qint32 xPriority, ISystem *xSystem)
     {
         mSystems.insert(xPriority, xSystem);
     }
 
-    void EntitySystem::changeSystemPriority(ISystem *xSystem, qint32 xNewPriority)
+    void World::changeSystemPriority(ISystem *xSystem, qint32 xNewPriority)
     {
         qint32 xPriority;
         xPriority = mSystems.key(xSystem);
@@ -147,14 +135,14 @@ namespace JGC
         mSystems.insert(xNewPriority, xSystem);
     }
 
-    void EntitySystem::removeSystem(ISystem *xSystem)
+    void World::removeSystem(ISystem *xSystem)
     {
         qint32 xPriority;
         xPriority = mSystems.key(xSystem);
         mSystems.remove(xPriority, xSystem);
     }
 
-    void EntitySystem::injectUpdate(const float &xTimeSinceLastUpdate)
+    void World::injectUpdate(const float &xTimeSinceLastUpdate)
     {
         QMultiHash<qint32, ISystem*>::iterator xSystemsIter;
         xSystemsIter = mSystems.begin();
@@ -165,9 +153,9 @@ namespace JGC
         }
     }
 
-    void EntitySystem::printInfo()
+    void World::printInfo()
     {
-        qDebug()<<"--------------------- EntitySystem::printInfo ---------------------";
+        qDebug()<<"--------------------- World::printInfo ---------------------";
         {
             qDebug()<<"--- Nodes library:";
             QMultiHash<QString, QString>::iterator i = mNodesLibrary.begin();

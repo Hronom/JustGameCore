@@ -4,7 +4,7 @@
 #include "PhysicsDebugDrawer.h"
 #include "SoundSystem.h"
 #include "InputSystem.h"
-#include "EntitySystem.h"
+#include "WorldsSystem.h"
 #include "CountersSystem.h"
 
 namespace JGC
@@ -33,7 +33,7 @@ namespace JGC
 		{
 			InputSystem::instance()->injectUpdate();
 			PhysicsSystem::instance()->injectUpdate(mTimeSinceLastFrame);
-            EntitySystem::instance()->injectUpdate(mTimeSinceLastFrame);
+            WorldsSystem::instance()->injectUpdate(mTimeSinceLastFrame);
 			GraphicSystem::instance()->injectUpdate();
 		}
 	}
@@ -56,7 +56,7 @@ namespace JGC
 			GraphicSystem::instance()->getWinHandle(),
 			GraphicSystem::instance()->getWinWidth(), 
 			GraphicSystem::instance()->getWinHeight());
-        EntitySystem::initialize();
+        WorldsSystem::initialize();
         CountersSystem::initialize();
 
 		/*mPhysicsDebugDrawer = new PhysicsDebugDrawer(GraphicSystem::instance()->getSceneManager());
@@ -66,7 +66,7 @@ namespace JGC
 	MainSystem::~MainSystem()
 	{
 		//delete mPhysicsDebugDrawer;
-        EntitySystem::shutdown();
+        WorldsSystem::shutdown();
 		InputSystem::shutdown();
 		SoundSystem::shutdown();
 		PhysicsSystem::shutdown();

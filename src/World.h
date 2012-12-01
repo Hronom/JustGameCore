@@ -1,5 +1,5 @@
-#ifndef ENTITYSYSTEM_H
-#define ENTITYSYSTEM_H
+#ifndef WORLD_H
+#define WORLD_H
 
 #include "Entity.h"
 #include "IComponent.h"
@@ -10,10 +10,10 @@
 
 namespace JGC
 {
-    class EntitySystem
+    class World
     {
     private:
-        static EntitySystem* mInstance;
+        QString mWorldName;
 
         /** Node name - Component type */
         QMultiHash<QString, QString> mNodesLibrary;
@@ -27,15 +27,11 @@ namespace JGC
         QMultiHash<qint32, ISystem*> mSystems;
 
     public:
-        static void initialize();
-        static void shutdown();
-        static EntitySystem* instance();
+        World(QString xWorldName);
+        virtual ~World();
 
-    private:
-        EntitySystem();
-        ~EntitySystem();
+        QString getName();
 
-    public:
         void addComponentToNode(QString xNodeName, QString xComponentType);
         void removeComponentFromNode(QString xNodeName, QString xComponentType);
 
@@ -51,6 +47,10 @@ namespace JGC
         void injectUpdate(const float& xTimeSinceLastUpdate);
 
         void printInfo();
+
+        virtual void load() = 0;
+        virtual void enter() = 0;
+        virtual void exit() = 0;
     };
 }
 

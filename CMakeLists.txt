@@ -18,13 +18,11 @@ SET(HEADERS
 ./src/SoundListener.h
 ./src/SoundSource.h
 ./src/SoundSystem.h
-./src/ILoadScreen.h
-./src/IState.h
-./src/StatesSystem.h
+./src/World.h
+./src/WorldsSystem.h
 ./src/Entity.h
 ./src/IComponent.h
 ./src/ISystem.h
-./src/EntitySystem.h
 ./src/CountersSystem.h
 ./src/Counter.h
 )
@@ -40,9 +38,9 @@ SET(SOURCES
 ./src/SoundListener.cpp
 ./src/SoundSource.cpp
 ./src/SoundSystem.cpp
-./src/StatesSystem.cpp
+./src/World.cpp
+./src/WorldsSystem.cpp
 ./src/Entity.cpp
-./src/EntitySystem.cpp
 ./src/CountersSystem.cpp
 ./src/Counter.cpp
 )

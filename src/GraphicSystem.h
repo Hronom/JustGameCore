@@ -12,6 +12,9 @@
 
 #include "ISystemsListener.h"
 
+#include <QString>
+#include <QHash>
+
 namespace JGC
 {
 	class GraphicSystem : public Ogre::FrameListener, public Ogre::WindowEventListener
@@ -29,8 +32,10 @@ namespace JGC
 
 		Ogre::Root *mRoot;
 		Ogre::RenderWindow *mRenderWindow;
-		Ogre::SceneManager *mSceneManager;
-        Ogre::Camera* mCamera;
+        Ogre::SceneManager *mActiveSceneManager;
+        QHash<QString, Ogre::SceneManager *> mSceneManagers;
+        //Ogre::SceneManager *mSceneManager;
+        //Ogre::Camera* mCamera;
 
 		MyGUI::OgrePlatform *mOgrePlatform;
 		MyGUI::Gui *mMyGUI;
@@ -71,8 +76,14 @@ namespace JGC
 		unsigned int getWinHandle();
 		unsigned int getWinWidth();
 		unsigned int getWinHeight();
-		Ogre::SceneManager* getSceneManager();
-        Ogre::Camera* getCamera();
+
+        void setActiveSceneManager(QString xSceneManagerName);
+        Ogre::SceneManager* getActiveSceneManager();
+
+        void createSceneManager(QString xSceneManagerName);
+        Ogre::SceneManager* getSceneManager(QString xSceneManagerName);
+
+        Ogre::Camera* getCamera(QString xSceneManagerName);
 		MyGUI::Gui* getGui();
 
         Ogre::Vector3 getMouseWorldCoord(Ogre::Real xDistance);

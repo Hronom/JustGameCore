@@ -102,38 +102,10 @@ namespace JGC
         Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
         //-----------------------------------------------------
-        // 4 Создание менеджера сцен
-        //
-        //		ST_GENERIC = octree
-        //		ST_EXTERIOR_CLOSE = simple terrain
-        //		ST_EXTERIOR_FAR = nature terrain (depreciated)
-        //		ST_EXTERIOR_REAL_FAR = paging landscape
-        //		ST_INTERIOR = Quake3 BSP
-        //-----------------------------------------------------
-        mSceneManager = mRoot->createSceneManager(Ogre::ST_GENERIC);
-        mSceneManager->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
-
-        //-----------------------------------------------------
-        // 5 Создание камеры
-        //-----------------------------------------------------
-        mCamera = mSceneManager->createCamera("MainCamera");
-        mCamera->setPosition(Ogre::Vector3(0,0,100));
-        mCamera->lookAt(Ogre::Vector3(0,0,0));
-        mCamera->setNearClipDistance(5);
-
-        //-----------------------------------------------------
-        // 6 Создание вьюпорта
-        //-----------------------------------------------------
-        Ogre::Viewport* xViewport = mRenderWindow->addViewport(mCamera);
-        xViewport->setBackgroundColour(Ogre::ColourValue(0,0,0));
-
-        mCamera->setAspectRatio(Ogre::Real(xViewport->getActualWidth()) / Ogre::Real(xViewport->getActualHeight()));
-
-        //-----------------------------------------------------
         // 7 Инициализация MyGUI
         //-----------------------------------------------------
         mOgrePlatform = new MyGUI::OgrePlatform();
-        mOgrePlatform->initialise(mRenderWindow, mSceneManager, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, mMyGUILogFile);
+        mOgrePlatform->initialise(mRenderWindow, 0, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, mMyGUILogFile);
         mMyGUI = new MyGUI::Gui();
         mMyGUI->initialise();
 
@@ -142,6 +114,8 @@ namespace JGC
         //-----------------------------------------------------
         Ogre::WindowEventUtilities::addWindowEventListener(mRenderWindow, this);
         mRoot->addFrameListener(this);
+
+        mActiveSceneManager = 0;
 
         return true;
     }
@@ -215,14 +189,79 @@ namespace JGC
         return mRenderWindow->getHeight();
     }
 
-    Ogre::SceneManager* GraphicSystem::getSceneManager()
+    void GraphicSystem::setActiveSceneManager(QString xSceneManagerName)
     {
-        return mSceneManager;
+        if(mSceneManagers.contains(xSceneManagerName))
+        {
+            if(mActiveSceneManager != 0)
+                mActiveSceneManager->setDisplaySceneNodes(false);
+
+            mActiveSceneManager = mSceneManagers.value(xSceneManagerName);
+
+            //-----------------------------------------------------
+            // Создание вьюпорта
+            //-----------------------------------------------------
+            mRenderWindow->removeAllViewports();
+            Ogre::Camera *xCamera = mActiveSceneManager->getCamera("MainCamera"); //The Camera
+            Ogre::Viewport* xViewport = mRenderWindow->addViewport(xCamera);
+            xViewport->setBackgroundColour(Ogre::ColourValue(0,0,0));
+
+            xCamera->setAspectRatio(Ogre::Real(xViewport->getActualWidth()) / Ogre::Real(xViewport->getActualHeight()));
+
+            //-----------------------------------------------------
+            // Обновление данных MyGUI
+            //-----------------------------------------------------
+            mOgrePlatform->getRenderManagerPtr()->setSceneManager(mActiveSceneManager);
+            mOgrePlatform->getRenderManagerPtr()->setActiveViewport(0);
+        }
     }
 
-    Ogre::Camera* GraphicSystem::getCamera()
+    Ogre::SceneManager* GraphicSystem::getActiveSceneManager()
     {
-        return mCamera;
+        return mActiveSceneManager;
+    }
+
+    void GraphicSystem::createSceneManager(QString xSceneManagerName)
+    {
+        //-----------------------------------------------------
+        // 4 Создание менеджера сцен
+        //
+        //		ST_GENERIC = octree
+        //		ST_EXTERIOR_CLOSE = simple terrain
+        //		ST_EXTERIOR_FAR = nature terrain (depreciated)
+        //		ST_EXTERIOR_REAL_FAR = paging landscape
+        //		ST_INTERIOR = Quake3 BSP
+        //-----------------------------------------------------
+        Ogre::SceneManager *xSceneManager;
+        xSceneManager = mRoot->createSceneManager(Ogre::ST_GENERIC, xSceneManagerName.toStdString());
+        xSceneManager->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
+
+        mSceneManagers.insert(xSceneManagerName, xSceneManager);
+
+        //-----------------------------------------------------
+        // 5 Создание камеры
+        //-----------------------------------------------------
+        Ogre::Camera *xCamera;
+        xCamera = xSceneManager->createCamera("MainCamera");
+        xCamera->setPosition(Ogre::Vector3(0,0,100));
+        xCamera->lookAt(Ogre::Vector3(0,0,0));
+        xCamera->setNearClipDistance(5);
+    }
+
+    Ogre::SceneManager* GraphicSystem::getSceneManager(QString xSceneManagerName)
+    {
+        if(mSceneManagers.contains(xSceneManagerName))
+            return mSceneManagers.value(xSceneManagerName);
+        else
+            return 0;
+    }
+
+    Ogre::Camera* GraphicSystem::getCamera(QString xSceneManagerName)
+    {
+        if(mSceneManagers.contains(xSceneManagerName))
+            return mSceneManagers.value(xSceneManagerName)->getCamera("MainCamera");
+        else
+            return 0;
     }
 
     MyGUI::Gui* GraphicSystem::getGui()
@@ -234,7 +273,7 @@ namespace JGC
     {
         MyGUI::IntPoint xMousePosition = MyGUI::InputManager::getInstancePtr()->getMousePosition();
         MyGUI::IntSize xSize = MyGUI::RenderManager::getInstance().getViewSize();
-        Ogre::Ray xRay = mCamera->getCameraToViewportRay(xMousePosition.left / float(xSize.width), xMousePosition.top / float(xSize.height));
+        Ogre::Ray xRay = mActiveSceneManager->getCamera("MainCamera")->getCameraToViewportRay(xMousePosition.left / float(xSize.width), xMousePosition.top / float(xSize.height));
         return xRay.getPoint(xDistance);
     }
 }

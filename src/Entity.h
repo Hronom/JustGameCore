@@ -8,7 +8,7 @@ namespace JGC
 {
     class Entity
     {
-        friend class EntitySystem;
+        friend class World;
     private:
         QString mName;
 
