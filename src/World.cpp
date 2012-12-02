@@ -7,6 +7,7 @@ namespace JGC
     World::World(QString xWorldName)
     {
         mWorldName = xWorldName;
+        mWorldLoaded = false;
     }
 
     World::~World()
@@ -17,6 +18,16 @@ namespace JGC
     QString World::getName()
     {
         return mWorldName;
+    }
+
+    void World::setWorldLoaded(bool xWorldLoaded)
+    {
+        mWorldLoaded = xWorldLoaded;
+    }
+
+    bool World::isWorldLoaded()
+    {
+        return mWorldLoaded;
     }
 
     void World::addComponentToNode(QString xNodeName, QString xComponentType)

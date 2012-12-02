@@ -4,6 +4,9 @@
 #include "ISystemsListener.h"
 
 #include <btBulletDynamicsCommon.h>
+
+#include <QHash>
+#include <QString>
 #include <QVector>
 #include <QPair>
 
@@ -21,7 +24,10 @@ namespace JGC
 		btDefaultCollisionConfiguration* mCollisionConfiguration;
 		btCollisionDispatcher* mDispatcher;
 		btSequentialImpulseConstraintSolver* mSolver;
-		btDiscreteDynamicsWorld* mDynamicsWorld;
+
+        btDiscreteDynamicsWorld* mActiveDynamicsWorld;
+        QHash<QString, btDiscreteDynamicsWorld*> mDynamicsWorlds;
+        //btDiscreteDynamicsWorld* mDynamicsWorld;
 
 	public:
         static void initialize(ISystemsListener *xMainListener);
@@ -36,7 +42,13 @@ namespace JGC
 	public:
 		void injectUpdate(const float& xTimeSinceLastFrame);
 		void setDebugDrawer(btIDebugDraw* xBtIDebugDraw);
-		btDiscreteDynamicsWorld* getDynamicsWorld();
+
+        void setActiveDynamicsWorld(QString xDynamicsWorldName);
+        btDiscreteDynamicsWorld* getActiveDynamicsWorld();
+
+        void createDynamicsWorld(QString xDynamicsWorldName);
+        btDiscreteDynamicsWorld* getDynamicsWorld(QString xDynamicsWorldName);
+
         QVector<QPair<const btCollisionObject *, const btCollisionObject *> > getCollidedObjects();
 	};
 }

@@ -1,5 +1,7 @@
 #include "WorldsSystem.h"
 
+#include <QtConcurrentRun>
+
 namespace JGC
 {
     WorldsSystem* WorldsSystem::mInstance = 0;
@@ -54,7 +56,12 @@ namespace JGC
     void WorldsSystem::loadWorld(QString xWorldName)
     {
         if(mWorlds.contains(xWorldName))
-            mWorlds.value(xWorldName)->load();
+        {
+            World *xWorld;
+            xWorld = mWorlds.value(xWorldName);
+            xWorld->load();
+            //QtConcurrent::run(xWorld, &World::load);
+        }
     }
 
     void WorldsSystem::setActiveWorld(QString xWorldName)

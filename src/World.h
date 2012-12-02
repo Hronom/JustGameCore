@@ -14,6 +14,7 @@ namespace JGC
     {
     private:
         QString mWorldName;
+        bool mWorldLoaded;
 
         /** Node name - Component type */
         QMultiHash<QString, QString> mNodesLibrary;
@@ -31,6 +32,12 @@ namespace JGC
         virtual ~World();
 
         QString getName();
+
+    protected:
+        void setWorldLoaded(bool xWorldLoaded);
+
+    public:
+        bool isWorldLoaded();
 
         void addComponentToNode(QString xNodeName, QString xComponentType);
         void removeComponentFromNode(QString xNodeName, QString xComponentType);
