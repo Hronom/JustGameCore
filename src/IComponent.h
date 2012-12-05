@@ -9,7 +9,7 @@ namespace JGC
 	{
 	public:
         virtual ~IComponent(){}
-        virtual QString getType() = 0;
+        virtual qint32 getType() = 0;
 	};
 }
 

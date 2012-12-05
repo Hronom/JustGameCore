@@ -16,15 +16,15 @@ namespace JGC
         QString mWorldName;
         bool mWorldLoaded;
 
-        /** Node name - Component type */
-        QMultiHash<QString, QString> mNodesLibrary;
+        /** node id - component type */
+        QMultiHash<qint32, qint32> mNodesLibrary;
 
-        /** Entity name - Entity */
+        /** entity name - entity */
         QHash<QString, Entity*> mEntitys;
-        /** Node name - Entity name */
-        QMultiHash<QString, QString> mNodes;
+        /** node id - entity name */
+        QMultiHash<qint32, QString> mNodes;
 
-        /** Priority - System */
+        /** system priority - system */
         QMultiHash<qint32, ISystem*> mSystems;
 
     public:
@@ -39,11 +39,11 @@ namespace JGC
     public:
         bool isWorldLoaded();
 
-        void addComponentToNode(QString xNodeName, QString xComponentType);
-        void removeComponentFromNode(QString xNodeName, QString xComponentType);
+        void addComponentToNode(qint32 xNodeID, qint32 xComponentType);
+        void removeComponentFromNode(qint32 xNodeID, qint32 xComponentType);
 
         void removeEntity(QString xName);
-        QVector<Entity*> getEntitysInNode(QString xNodeName);
+        QVector<Entity*> getEntitysInNode(qint32 xNodeID);
         void addComponent(QString xEntityName, IComponent* xComponent);
         void removeComponent(QString xEntityName, IComponent* xComponent);
 

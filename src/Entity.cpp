@@ -12,12 +12,12 @@ namespace JGC
         return mName;
     }
 
-    bool Entity::hasComponent(const QString &xType) const
+    bool Entity::hasComponent(const qint32 &xType) const
     {
         return mComponents.contains(xType);
     }
 
-    IComponent *Entity::getComponent(const QString &xType) const
+    IComponent *Entity::getComponent(const qint32 &xType) const
     {
         return mComponents.value(xType);
     }

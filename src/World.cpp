@@ -30,14 +30,14 @@ namespace JGC
         return mWorldLoaded;
     }
 
-    void World::addComponentToNode(QString xNodeName, QString xComponentType)
+    void World::addComponentToNode(qint32 xNodeID, qint32 xComponentType)
     {
-        mNodesLibrary.insert(xNodeName, xComponentType);
+        mNodesLibrary.insert(xNodeID, xComponentType);
     }
 
-    void World::removeComponentFromNode(QString xNodeName, QString xComponentType)
+    void World::removeComponentFromNode(qint32 xNodeID, qint32 xComponentType)
     {
-        mNodesLibrary.remove(xNodeName, xComponentType);
+        mNodesLibrary.remove(xNodeID, xComponentType);
     }
 
     void World::removeEntity(QString xName)
@@ -45,11 +45,11 @@ namespace JGC
         mEntitys.remove(xName);
     }
 
-    QVector<Entity*> World::getEntitysInNode(QString xNodeName)
+    QVector<Entity*> World::getEntitysInNode(qint32 xNodeID)
     {
         QVector<Entity*> xEntitys;
 
-        QList<QString> xEntitysNames = mNodes.values(xNodeName);
+        QList<QString> xEntitysNames = mNodes.values(xNodeID);
         for(int i = 0; i < xEntitysNames.size(); ++i)
         {
             Entity *xEntity;
@@ -78,25 +78,25 @@ namespace JGC
 
         // Update nodes
         {
-            QString xComType = xComponent->getType();
+            qint32 xComType = xComponent->getType();
 
             // Get list of nodes names that have type of added component
-            QList<QString> xNodesNames;
-            xNodesNames = mNodesLibrary.keys(xComType);
+            QList<qint32> xNodesIDs;
+            xNodesIDs = mNodesLibrary.keys(xComType);
 
-            QList<QString>::iterator xNodesNamesIter;
-            xNodesNamesIter = xNodesNames.begin();
-            for(; xNodesNamesIter != xNodesNames.end(); ++xNodesNamesIter)
+            QList<qint32>::iterator xNodesIDsIter;
+            xNodesIDsIter = xNodesIDs.begin();
+            for(; xNodesIDsIter != xNodesIDs.end(); ++xNodesIDsIter)
             {
                 // Form list of needed components to be in node
-                QList<QString> xComTypes;
-                xComTypes = mNodesLibrary.values((*xNodesNamesIter));
+                QList<qint32> xComTypes;
+                xComTypes = mNodesLibrary.values((*xNodesIDsIter));
                 xComTypes.removeAll(xComType);
 
                 // Check is entity have all components to be in current node
                 bool xHaveAllComponents = true;
 
-                QList<QString>::iterator xComTypesIter;
+                QList<qint32>::iterator xComTypesIter;
                 xComTypesIter = xComTypes.begin();
                 for(; xComTypesIter != xComTypes.end(); ++xComTypesIter)
                 {
@@ -108,7 +108,7 @@ namespace JGC
                 }
 
                 if(xHaveAllComponents)
-                    mNodes.insert((*xNodesNamesIter), xEntityName);
+                    mNodes.insert((*xNodesIDsIter), xEntityName);
             }
         }
     }
@@ -123,13 +123,13 @@ namespace JGC
             xEntity->mComponents.remove(xComponent->getType());
 
             // Remove node
-            QList<QString> xNodesNames;
-            xNodesNames = mNodesLibrary.keys(xComponent->getType());
+            QList<qint32> xNodesIDs;
+            xNodesIDs = mNodesLibrary.keys(xComponent->getType());
 
-            QList<QString>::iterator xNodesNamesIter;
-            xNodesNamesIter = xNodesNames.begin();
-            for( ; xNodesNamesIter != xNodesNames.end(); ++xNodesNamesIter)
-                mNodes.remove((*xNodesNamesIter), xEntityName);
+            QList<qint32>::iterator xNodesIDsIter;
+            xNodesIDsIter = xNodesIDs.begin();
+            for( ; xNodesIDsIter != xNodesIDs.end(); ++xNodesIDsIter)
+                mNodes.remove((*xNodesIDsIter), xEntityName);
         }
     }
 
@@ -169,7 +169,7 @@ namespace JGC
         qDebug()<<"--------------------- World::printInfo ---------------------";
         {
             qDebug()<<"--- Nodes library:";
-            QMultiHash<QString, QString>::iterator i = mNodesLibrary.begin();
+            QMultiHash<qint32, qint32>::iterator i = mNodesLibrary.begin();
             while(i != mNodesLibrary.end())
             {
                 qDebug()<<"Node name:"<<i.key()<<"Component type:"<<i.value();
@@ -187,7 +187,7 @@ namespace JGC
         }
         {
             qDebug()<<"--- Nodes:";
-            QMultiHash<QString, QString>::iterator i = mNodes.begin();
+            QMultiHash<qint32, QString>::iterator i = mNodes.begin();
             while(i != mNodes.end())
             {
                 qDebug()<<"Node name:"<<i.key()<<"Entity name:"<<i.value();

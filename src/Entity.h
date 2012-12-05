@@ -12,14 +12,15 @@ namespace JGC
     private:
         QString mName;
 
-        QHash<QString, IComponent*> mComponents;
+        // component type - component
+        QHash<quint32, IComponent*> mComponents;
 
     public:
         Entity(QString xName);
 
         QString getName() const;
-        bool hasComponent(const QString &xType) const;
-        IComponent* getComponent(const QString &xType) const;
+        bool hasComponent(const qint32 &xType) const;
+        IComponent* getComponent(const qint32 &xType) const;
     };
 }
 
