@@ -1,5 +1,7 @@
 #include "GraphicSystem.h"
 
+#include <QDebug>
+
 namespace JGC
 {
     GraphicSystem* GraphicSystem::mInstance = 0;
@@ -12,6 +14,7 @@ namespace JGC
 
     void GraphicSystem::shutdown()
     {
+        qDebug()<<"Shutdown:"<<"GraphicSystem";
         delete mInstance;
         mInstance = 0;
     }

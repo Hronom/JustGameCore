@@ -26,6 +26,8 @@ namespace JGC
 
 	public:
         void addCounter(QString xName);
+        void removeCounter(QString xName);
+
         void removeName(QString xCounterName, QString xName);
         QString getNameWithSuffix(QString xCounterName, QString xName);
 	};

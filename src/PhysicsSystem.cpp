@@ -1,5 +1,6 @@
 #include "PhysicsSystem.h"
 
+#include <QDebug>
 
 namespace JGC
 {
@@ -13,6 +14,7 @@ namespace JGC
 
 	void PhysicsSystem::shutdown()
 	{
+        qDebug()<<"Shutdown:"<<"PhysicsSystem";
 		delete mInstance;
 		mInstance = 0;
 	}

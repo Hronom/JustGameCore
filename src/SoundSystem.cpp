@@ -1,5 +1,7 @@
 #include "SoundSystem.h"
 
+#include <QDebug>
+
 namespace JGC
 {
 	SoundSystem* SoundSystem::mInstance = 0;
@@ -11,6 +13,7 @@ namespace JGC
 
 	void SoundSystem::shutdown()
 	{
+        qDebug()<<"Shutdown:"<<"SoundSystem";
 		delete mInstance;
 		mInstance = 0;
 	}

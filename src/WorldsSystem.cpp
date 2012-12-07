@@ -1,5 +1,6 @@
 #include "WorldsSystem.h"
 
+#include <QDebug>
 #include <QtConcurrentRun>
 
 namespace JGC
@@ -14,6 +15,7 @@ namespace JGC
 
     void WorldsSystem::shutdown()
 	{
+        qDebug()<<"Shutdown:"<<"WorldsSystem";
 		delete mInstance;
 		mInstance = 0;
 	}

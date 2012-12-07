@@ -7,6 +7,8 @@
 #include "WorldsSystem.h"
 #include "CountersSystem.h"
 
+#include <QDebug>
+
 namespace JGC
 {
 	MainSystem* MainSystem::mInstance = 0;
@@ -18,6 +20,7 @@ namespace JGC
 
 	void MainSystem::shutdown()
 	{
+        qDebug()<<"Shutdown:"<<"MainSystem";
 		delete mInstance;
 		mInstance = 0;
 	}

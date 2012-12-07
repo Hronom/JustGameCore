@@ -12,7 +12,7 @@ namespace JGC
 
     World::~World()
     {
-
+        qDebug()<<"Destroying world:"<<mWorldName;
     }
 
     QString World::getName()
@@ -38,6 +38,11 @@ namespace JGC
     void World::removeComponentFromNode(qint32 xNodeID, qint32 xComponentType)
     {
         mNodesLibrary.remove(xNodeID, xComponentType);
+    }
+
+    Entity* World::getEntity(QString xName)
+    {
+        return mEntitys.value(xName, 0);
     }
 
     void World::removeEntity(QString xName)

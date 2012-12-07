@@ -1,5 +1,6 @@
 #include "InputSystem.h"
 
+#include <QDebug>
 
 namespace JGC
 {
@@ -13,6 +14,7 @@ namespace JGC
 
     void InputSystem::shutdown()
     {
+        qDebug()<<"Shutdown:"<<"InputSystem";
         delete mInstance;
         mInstance = 0;
     }
