@@ -77,11 +77,12 @@ namespace JGC
 		unsigned int getWinWidth();
 		unsigned int getWinHeight();
 
+        void createSceneManager(QString xSceneManagerName);
+        void deleteSceneManager(QString xSceneManagerName);
+        Ogre::SceneManager* getSceneManager(QString xSceneManagerName);
+
         void setActiveSceneManager(QString xSceneManagerName);
         Ogre::SceneManager* getActiveSceneManager();
-
-        void createSceneManager(QString xSceneManagerName);
-        Ogre::SceneManager* getSceneManager(QString xSceneManagerName);
 
         Ogre::Camera* getCamera(QString xSceneManagerName);
 		MyGUI::Gui* getGui();

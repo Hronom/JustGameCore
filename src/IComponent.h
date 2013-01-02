@@ -2,6 +2,7 @@
 #define ICOMPONENT_H
 
 #include <QString>
+#include <QMetaType>
 
 namespace JGC
 {
@@ -9,7 +10,6 @@ namespace JGC
 	{
 	public:
         virtual ~IComponent(){}
-        virtual qint32 getType() = 0;
 	};
 }
 

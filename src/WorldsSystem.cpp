@@ -55,21 +55,13 @@ namespace JGC
         mWorlds.remove(xWorldName);
     }
 
-    void WorldsSystem::loadWorld(QString xWorldName)
-    {
-        if(mWorlds.contains(xWorldName))
-        {
-            World *xWorld;
-            xWorld = mWorlds.value(xWorldName);
-            xWorld->load();
-            //QtConcurrent::run(xWorld, &World::load);
-        }
-    }
-
     void WorldsSystem::setActiveWorld(QString xWorldName)
     {
         if(mActiveWorld != 0)
+        {
             mActiveWorld->exit();
+            mActiveWorld = 0;
+        }
 
         if(mWorlds.contains(xWorldName))
         {

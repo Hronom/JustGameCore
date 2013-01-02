@@ -79,6 +79,34 @@ namespace JGC
         }
 	}
 
+    void PhysicsSystem::createDynamicsWorld(QString xDynamicsWorldName)
+    {
+        btDiscreteDynamicsWorld* xDynamicsWorld;
+        xDynamicsWorld = new btDiscreteDynamicsWorld(mDispatcher, mBroadphase, mSolver, mCollisionConfiguration);
+        xDynamicsWorld->setGravity(btVector3(0,0,0));
+        mDynamicsWorlds.insert(xDynamicsWorldName, xDynamicsWorld);
+    }
+
+    void PhysicsSystem::deleteDynamicsWorld(QString xDynamicsWorldName)
+    {
+        if(mDynamicsWorlds.contains(xDynamicsWorldName))
+        {
+            btDiscreteDynamicsWorld* xDynamicsWorld;
+            xDynamicsWorld = mDynamicsWorlds.take(xDynamicsWorldName);
+            if(mActiveDynamicsWorld == xDynamicsWorld)
+                mActiveDynamicsWorld = 0;
+            delete xDynamicsWorld;
+        }
+    }
+
+    btDiscreteDynamicsWorld* PhysicsSystem::getDynamicsWorld(QString xDynamicsWorldName)
+    {
+        if(mDynamicsWorlds.contains(xDynamicsWorldName))
+            return mDynamicsWorlds.value(xDynamicsWorldName);
+        else
+            return 0;
+    }
+
     void PhysicsSystem::setActiveDynamicsWorld(QString xDynamicsWorldName)
     {
         if(mDynamicsWorlds.contains(xDynamicsWorldName))
@@ -91,22 +119,6 @@ namespace JGC
     {
         if(mActiveDynamicsWorld != 0)
             return mActiveDynamicsWorld;
-        else
-            return 0;
-    }
-
-    void PhysicsSystem::createDynamicsWorld(QString xDynamicsWorldName)
-    {
-        btDiscreteDynamicsWorld* xDynamicsWorld;
-        xDynamicsWorld = new btDiscreteDynamicsWorld(mDispatcher, mBroadphase, mSolver, mCollisionConfiguration);
-        xDynamicsWorld->setGravity(btVector3(0,0,0));
-        mDynamicsWorlds.insert(xDynamicsWorldName, xDynamicsWorld);
-    }
-
-    btDiscreteDynamicsWorld* PhysicsSystem::getDynamicsWorld(QString xDynamicsWorldName)
-    {
-        if(mDynamicsWorlds.contains(xDynamicsWorldName))
-            return mDynamicsWorlds.value(xDynamicsWorldName);
         else
             return 0;
     }

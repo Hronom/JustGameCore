@@ -1,13 +1,11 @@
 #include "World.h"
 
-#include <QDebug>
-
 namespace JGC
 {
     World::World(QString xWorldName)
     {
         mWorldName = xWorldName;
-        mWorldLoaded = false;
+        mWorldActive = false;
     }
 
     World::~World()
@@ -20,29 +18,19 @@ namespace JGC
         return mWorldName;
     }
 
-    void World::setWorldLoaded(bool xWorldLoaded)
+    void World::setWorldActive(bool xWorldActive)
     {
-        mWorldLoaded = xWorldLoaded;
-    }
-
-    bool World::isWorldLoaded()
-    {
-        return mWorldLoaded;
-    }
-
-    void World::addComponentToNode(qint32 xNodeID, qint32 xComponentType)
-    {
-        mNodesLibrary.insert(xNodeID, xComponentType);
-    }
-
-    void World::removeComponentFromNode(qint32 xNodeID, qint32 xComponentType)
-    {
-        mNodesLibrary.remove(xNodeID, xComponentType);
+        mWorldActive = xWorldActive;
     }
 
     Entity* World::getEntity(QString xName)
     {
         return mEntitys.value(xName, 0);
+    }
+
+    QList<Entity*> World::getEntitys()
+    {
+        return mEntitys.values();
     }
 
     void World::removeEntity(QString xName)
@@ -65,79 +53,6 @@ namespace JGC
         return xEntitys;
     }
 
-    void World::addComponent(QString xEntityName, IComponent *xComponent)
-    {
-        Entity *xEntity;
-        // Add component
-        if(mEntitys.contains(xEntityName))
-        {
-            xEntity = mEntitys.value(xEntityName);
-            xEntity->mComponents.insert(xComponent->getType(), xComponent);
-        }
-        else
-        {
-            xEntity = new Entity(xEntityName);
-            xEntity->mComponents.insert(xComponent->getType(), xComponent);
-            mEntitys.insert(xEntityName, xEntity);
-        }
-
-        // Update nodes
-        {
-            qint32 xComType = xComponent->getType();
-
-            // Get list of nodes names that have type of added component
-            QList<qint32> xNodesIDs;
-            xNodesIDs = mNodesLibrary.keys(xComType);
-
-            QList<qint32>::iterator xNodesIDsIter;
-            xNodesIDsIter = xNodesIDs.begin();
-            for(; xNodesIDsIter != xNodesIDs.end(); ++xNodesIDsIter)
-            {
-                // Form list of needed components to be in node
-                QList<qint32> xComTypes;
-                xComTypes = mNodesLibrary.values((*xNodesIDsIter));
-                xComTypes.removeAll(xComType);
-
-                // Check is entity have all components to be in current node
-                bool xHaveAllComponents = true;
-
-                QList<qint32>::iterator xComTypesIter;
-                xComTypesIter = xComTypes.begin();
-                for(; xComTypesIter != xComTypes.end(); ++xComTypesIter)
-                {
-                    if(!xEntity->hasComponent((*xComTypesIter)))
-                    {
-                        xHaveAllComponents = false;
-                        break;
-                    }
-                }
-
-                if(xHaveAllComponents)
-                    mNodes.insert((*xNodesIDsIter), xEntityName);
-            }
-        }
-    }
-
-    void World::removeComponent(QString xEntityName, IComponent *xComponent)
-    {
-        if(mEntitys.contains(xEntityName))
-        {
-            // Remove entity
-            Entity *xEntity;
-            xEntity = mEntitys.value(xEntityName);
-            xEntity->mComponents.remove(xComponent->getType());
-
-            // Remove node
-            QList<qint32> xNodesIDs;
-            xNodesIDs = mNodesLibrary.keys(xComponent->getType());
-
-            QList<qint32>::iterator xNodesIDsIter;
-            xNodesIDsIter = xNodesIDs.begin();
-            for( ; xNodesIDsIter != xNodesIDs.end(); ++xNodesIDsIter)
-                mNodes.remove((*xNodesIDsIter), xEntityName);
-        }
-    }
-
     void World::addSystem(qint32 xPriority, ISystem *xSystem)
     {
         mSystems.insert(xPriority, xSystem);
@@ -149,6 +64,11 @@ namespace JGC
         xPriority = mSystems.key(xSystem);
         mSystems.remove(xPriority, xSystem);
         mSystems.insert(xNewPriority, xSystem);
+    }
+
+    QList<ISystem*> World::getAllSystems()
+    {
+        return mSystems.values();
     }
 
     void World::removeSystem(ISystem *xSystem)
@@ -164,8 +84,14 @@ namespace JGC
         xSystemsIter = mSystems.begin();
         while(xSystemsIter != mSystems.end())
         {
-            (*xSystemsIter)->injectUpdate(xTimeSinceLastUpdate);
-            ++xSystemsIter;
+            if(mWorldActive)
+            {
+                (*xSystemsIter)->injectUpdate(xTimeSinceLastUpdate);
+                if(mSystems.size() > 0)
+                    ++xSystemsIter;
+            }
+            else
+                break;
         }
     }
 

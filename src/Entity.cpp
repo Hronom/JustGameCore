@@ -1,5 +1,7 @@
 #include "Entity.h"
 
+#include <QMetaType>
+
 namespace JGC
 {
     Entity::Entity(QString xName)
@@ -17,8 +19,13 @@ namespace JGC
         return mComponents.contains(xType);
     }
 
-    IComponent *Entity::getComponent(const qint32 &xType) const
+    IComponent* Entity::getComponentBase(const qint32 &xType) const
     {
         return mComponents.value(xType);
+    }
+
+    QList<IComponent*> Entity::getComponents() const
+    {
+        return mComponents.values();
     }
 }

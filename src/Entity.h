@@ -20,7 +20,19 @@ namespace JGC
 
         QString getName() const;
         bool hasComponent(const qint32 &xType) const;
-        IComponent* getComponent(const qint32 &xType) const;
+
+        template<typename T>
+        T* getComponent() const
+        {
+            int xComponentType = qMetaTypeId<T>();
+            if(mComponents.contains(xComponentType))
+                return static_cast<T*>(mComponents.value(xComponentType));
+            else
+                return NULL;
+        }
+
+        IComponent* getComponentBase(const qint32 &xType) const;
+        QList<IComponent*> getComponents() const;
     };
 }
 

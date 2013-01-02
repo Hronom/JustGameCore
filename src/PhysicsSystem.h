@@ -27,7 +27,6 @@ namespace JGC
 
         btDiscreteDynamicsWorld* mActiveDynamicsWorld;
         QHash<QString, btDiscreteDynamicsWorld*> mDynamicsWorlds;
-        //btDiscreteDynamicsWorld* mDynamicsWorld;
 
 	public:
         static void initialize(ISystemsListener *xMainListener);
@@ -43,11 +42,12 @@ namespace JGC
 		void injectUpdate(const float& xTimeSinceLastFrame);
 		void setDebugDrawer(btIDebugDraw* xBtIDebugDraw);
 
+        void createDynamicsWorld(QString xDynamicsWorldName);
+        void deleteDynamicsWorld(QString xDynamicsWorldName);
+        btDiscreteDynamicsWorld* getDynamicsWorld(QString xDynamicsWorldName);
+
         void setActiveDynamicsWorld(QString xDynamicsWorldName);
         btDiscreteDynamicsWorld* getActiveDynamicsWorld();
-
-        void createDynamicsWorld(QString xDynamicsWorldName);
-        btDiscreteDynamicsWorld* getDynamicsWorld(QString xDynamicsWorldName);
 
         QVector<QPair<const btCollisionObject *, const btCollisionObject *> > getCollidedObjects();
 	};

@@ -192,6 +192,51 @@ namespace JGC
         return mRenderWindow->getHeight();
     }
 
+    void GraphicSystem::createSceneManager(QString xSceneManagerName)
+    {
+        //-----------------------------------------------------
+        // 4 Создание менеджера сцен
+        //
+        //		ST_GENERIC = octree
+        //		ST_EXTERIOR_CLOSE = simple terrain
+        //		ST_EXTERIOR_FAR = nature terrain (depreciated)
+        //		ST_EXTERIOR_REAL_FAR = paging landscape
+        //		ST_INTERIOR = Quake3 BSP
+        //-----------------------------------------------------
+        Ogre::SceneManager *xSceneManager;
+        xSceneManager = mRoot->createSceneManager(Ogre::ST_GENERIC, xSceneManagerName.toStdString());
+        xSceneManager->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
+
+        mSceneManagers.insert(xSceneManagerName, xSceneManager);
+
+        //-----------------------------------------------------
+        // 5 Создание камеры
+        //-----------------------------------------------------
+        Ogre::Camera *xCamera;
+        xCamera = xSceneManager->createCamera("MainCamera");
+        xCamera->setPosition(Ogre::Vector3(0,0,100));
+        xCamera->lookAt(Ogre::Vector3(0,0,0));
+        xCamera->setNearClipDistance(5);
+    }
+
+    void GraphicSystem::deleteSceneManager(QString xSceneManagerName)
+    {
+        if(mSceneManagers.contains(xSceneManagerName))
+        {
+            Ogre::SceneManager *xSceneManager;
+            xSceneManager = mSceneManagers.take(xSceneManagerName);
+            mRoot->destroySceneManager(xSceneManager);
+        }
+    }
+
+    Ogre::SceneManager* GraphicSystem::getSceneManager(QString xSceneManagerName)
+    {
+        if(mSceneManagers.contains(xSceneManagerName))
+            return mSceneManagers.value(xSceneManagerName);
+        else
+            return 0;
+    }
+
     void GraphicSystem::setActiveSceneManager(QString xSceneManagerName)
     {
         if(mSceneManagers.contains(xSceneManagerName))
@@ -222,41 +267,6 @@ namespace JGC
     Ogre::SceneManager* GraphicSystem::getActiveSceneManager()
     {
         return mActiveSceneManager;
-    }
-
-    void GraphicSystem::createSceneManager(QString xSceneManagerName)
-    {
-        //-----------------------------------------------------
-        // 4 Создание менеджера сцен
-        //
-        //		ST_GENERIC = octree
-        //		ST_EXTERIOR_CLOSE = simple terrain
-        //		ST_EXTERIOR_FAR = nature terrain (depreciated)
-        //		ST_EXTERIOR_REAL_FAR = paging landscape
-        //		ST_INTERIOR = Quake3 BSP
-        //-----------------------------------------------------
-        Ogre::SceneManager *xSceneManager;
-        xSceneManager = mRoot->createSceneManager(Ogre::ST_GENERIC, xSceneManagerName.toStdString());
-        xSceneManager->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
-
-        mSceneManagers.insert(xSceneManagerName, xSceneManager);
-
-        //-----------------------------------------------------
-        // 5 Создание камеры
-        //-----------------------------------------------------
-        Ogre::Camera *xCamera;
-        xCamera = xSceneManager->createCamera("MainCamera");
-        xCamera->setPosition(Ogre::Vector3(0,0,100));
-        xCamera->lookAt(Ogre::Vector3(0,0,0));
-        xCamera->setNearClipDistance(5);
-    }
-
-    Ogre::SceneManager* GraphicSystem::getSceneManager(QString xSceneManagerName)
-    {
-        if(mSceneManagers.contains(xSceneManagerName))
-            return mSceneManagers.value(xSceneManagerName);
-        else
-            return 0;
     }
 
     Ogre::Camera* GraphicSystem::getCamera(QString xSceneManagerName)

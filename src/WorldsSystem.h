@@ -34,8 +34,6 @@ namespace JGC
         World* getWorld(QString xWorldName);
         void removeWorld(QString xWorldName);
 
-        void loadWorld(QString xWorldName);
-
         void setActiveWorld(QString xWorldName);
         World* getActiveWorld();
 
