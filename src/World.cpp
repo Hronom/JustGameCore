@@ -28,7 +28,7 @@ namespace JGC
         return mEntitys.value(xName, 0);
     }
 
-    QList<Entity*> World::getEntitys()
+    QList<Entity*> World::getAllEntitys()
     {
         return mEntitys.values();
     }
@@ -36,6 +36,10 @@ namespace JGC
     void World::removeEntity(QString xName)
     {
         mEntitys.remove(xName);
+        QList<qint32> xKeys;
+        xKeys = mNodes.keys(xName);
+        while(!xKeys.isEmpty())
+             mNodes.remove(xKeys.takeFirst(), xName);
     }
 
     QVector<Entity*> World::getEntitysInNode(qint32 xNodeID)

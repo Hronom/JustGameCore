@@ -54,7 +54,7 @@ namespace JGC
         }
 
         Entity* getEntity(QString xName);
-        QList<Entity*> getEntitys();
+        QList<Entity*> getAllEntitys();
         void removeEntity(QString xName);
         QVector<Entity*> getEntitysInNode(qint32 xNodeID);
 

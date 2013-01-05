@@ -19,11 +19,6 @@ namespace JGC
         return mComponents.contains(xType);
     }
 
-    IComponent* Entity::getComponentBase(const qint32 &xType) const
-    {
-        return mComponents.value(xType);
-    }
-
     QList<IComponent*> Entity::getComponents() const
     {
         return mComponents.values();

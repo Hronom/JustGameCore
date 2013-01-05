@@ -31,7 +31,6 @@ namespace JGC
                 return NULL;
         }
 
-        IComponent* getComponentBase(const qint32 &xType) const;
         QList<IComponent*> getComponents() const;
     };
 }
