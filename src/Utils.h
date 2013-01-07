@@ -13,8 +13,6 @@ namespace JGC
 
 		btQuaternion toBtQuaternion(const Ogre::Quaternion &xQuaternion);
 		Ogre::Quaternion toOgreQuaternion(const btQuaternion &xQuaternion);
-
-		Ogre::Vector2 toOgreVector2Z(const Ogre::Vector3 &xVector3);
 	}
 }
 

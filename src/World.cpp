@@ -35,25 +35,18 @@ namespace JGC
 
     void World::removeEntity(QString xName)
     {
-        mEntitys.remove(xName);
+        Entity *xEntity;
+        xEntity = mEntitys.take(xName);
         QList<qint32> xKeys;
-        xKeys = mNodes.keys(xName);
+        xKeys = mNodes.keys(xEntity);
         while(!xKeys.isEmpty())
-             mNodes.remove(xKeys.takeFirst(), xName);
+             mNodes.remove(xKeys.takeFirst(), xEntity);
     }
 
-    QVector<Entity*> World::getEntitysInNode(qint32 xNodeID)
+    QList<Entity*> World::getEntitysInNode(qint32 xNodeID)
     {
-        QVector<Entity*> xEntitys;
-
-        QList<QString> xEntitysNames = mNodes.values(xNodeID);
-        for(int i = 0; i < xEntitysNames.size(); ++i)
-        {
-            Entity *xEntity;
-            xEntity = mEntitys.value(xEntitysNames.at(i));
-            xEntitys.push_back(xEntity);
-        }
-
+        QList<Entity*> xEntitys;
+        xEntitys = mNodes.values(xNodeID);
         return xEntitys;
     }
 
@@ -122,10 +115,10 @@ namespace JGC
         }
         {
             qDebug()<<"--- Nodes:";
-            QMultiHash<qint32, QString>::iterator i = mNodes.begin();
+            QMultiHash<qint32, Entity*>::iterator i = mNodes.begin();
             while(i != mNodes.end())
             {
-                qDebug()<<"Node name:"<<i.key()<<"Entity name:"<<i.value();
+                qDebug()<<"Node name:"<<i.key()<<"Entity name:"<<i.value()->getName();
                 ++i;
             }
         }

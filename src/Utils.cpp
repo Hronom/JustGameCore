@@ -23,10 +23,5 @@ namespace JGC
 		{
 			return Ogre::Quaternion(xQuaternion.w(), xQuaternion.x(), xQuaternion.y(), xQuaternion.z());
 		}
-
-		Ogre::Vector2 toOgreVector2Z(const Ogre::Vector3 &xVector3)
-		{
-			return Ogre::Vector2 (xVector3.x, xVector3.y);
-		}
 	}
 }

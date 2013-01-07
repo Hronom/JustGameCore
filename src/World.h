@@ -24,7 +24,7 @@ namespace JGC
         /** entity name - entity */
         QHash<QString, Entity*> mEntitys;
         /** node id - entity name */
-        QMultiHash<qint32, QString> mNodes;
+        QMultiHash<qint32, Entity*> mNodes;
 
         /** system priority - system */
         QMultiHash<qint32, ISystem*> mSystems;
@@ -56,7 +56,7 @@ namespace JGC
         Entity* getEntity(QString xName);
         QList<Entity*> getAllEntitys();
         void removeEntity(QString xName);
-        QVector<Entity*> getEntitysInNode(qint32 xNodeID);
+        QList<Entity *> getEntitysInNode(qint32 xNodeID);
 
         template<typename T>
         void addComponent(QString xEntityName, T *xComponent)
@@ -107,7 +107,7 @@ namespace JGC
                     }
 
                     if(xHaveAllComponents)
-                        mNodes.insert((*xNodesIDsIter), xEntityName);
+                        mNodes.insert((*xNodesIDsIter), xEntity);
                 }
             }
         }
@@ -131,7 +131,7 @@ namespace JGC
                 QList<qint32>::iterator xNodesIDsIter;
                 xNodesIDsIter = xNodesIDs.begin();
                 for( ; xNodesIDsIter != xNodesIDs.end(); ++xNodesIDsIter)
-                    mNodes.remove((*xNodesIDsIter), xEntityName);
+                    mNodes.remove((*xNodesIDsIter), xEntity);
             }
         };
 

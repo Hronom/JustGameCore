@@ -1,8 +1,7 @@
 #ifndef ICOMPONENT_H
 #define ICOMPONENT_H
 
-#include <QString>
-#include <QMetaType>
+#include <QMetaType> //This include for childs classes
 
 namespace JGC
 {

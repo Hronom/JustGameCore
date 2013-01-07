@@ -34,8 +34,6 @@ namespace JGC
 		Ogre::RenderWindow *mRenderWindow;
         Ogre::SceneManager *mActiveSceneManager;
         QHash<QString, Ogre::SceneManager *> mSceneManagers;
-        //Ogre::SceneManager *mSceneManager;
-        //Ogre::Camera* mCamera;
 
 		MyGUI::OgrePlatform *mOgrePlatform;
 		MyGUI::Gui *mMyGUI;
