@@ -75,6 +75,8 @@ namespace JGC
 		unsigned int getWinWidth();
 		unsigned int getWinHeight();
 
+        float getLastFPS();
+
         void createSceneManager(QString xSceneManagerName);
         void deleteSceneManager(QString xSceneManagerName);
         Ogre::SceneManager* getSceneManager(QString xSceneManagerName);

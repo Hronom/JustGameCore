@@ -192,6 +192,11 @@ namespace JGC
         return mRenderWindow->getHeight();
     }
 
+    float GraphicSystem::getLastFPS()
+    {
+        return mRenderWindow->getLastFPS();
+    }
+
     void GraphicSystem::createSceneManager(QString xSceneManagerName)
     {
         //-----------------------------------------------------
